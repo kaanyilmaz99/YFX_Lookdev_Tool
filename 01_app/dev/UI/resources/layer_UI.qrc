@@ -1,0 +1,12 @@
+<RCC>
+  <qresource prefix="layers">
+    <file>icons/rename.png</file>
+    <file>icons/rename_clicked.png</file>
+    <file>icons/trash.png</file>
+    <file>icons/folder.png</file>
+    <file>icons/folder_pressed.png</file>
+    <file>icons/trash_clicked.png</file>
+    <file>icons/layers.png</file>
+    <file>icons/layers_clicked.png</file>
+  </qresource>
+</RCC>

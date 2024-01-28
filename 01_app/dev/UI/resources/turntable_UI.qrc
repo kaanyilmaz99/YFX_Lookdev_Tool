@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="turntable">
+    <file>icons/folder_pressed.png</file>
+    <file>icons/folder.png</file>
+  </qresource>
+</RCC>
