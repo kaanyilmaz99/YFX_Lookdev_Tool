@@ -29,7 +29,7 @@ A wip version of my turntable tool for 3dsmax.
 
  ### How it works
 
- There are 3 modules which are important (the 'create_menu' module can be ignored for now).
+ There are 3 modules which are important (the 'create_menu.py' module can be ignored for now).
  
  The first one is the 'create_main_ui' which is basically the starting script. It creates a dockable window, assigns the main ui to it and
  then connects all the buttons.
