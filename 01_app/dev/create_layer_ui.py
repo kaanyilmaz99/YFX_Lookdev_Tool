@@ -1,24 +1,33 @@
+# Dynamically builds the "Layers" into the main_ui 
+
+import os
+import sys
+import importlib
+
+
+import qtmax
 from pymxs import runtime as rt
+
+from PySide2.QtWidgets import *
 from PySide2 import QtWidgets, QtGui, QtUiTools, QtCore
 from PySide2.QtCore import Slot, Signal, QProcess, QObject
-from PySide2.QtWidgets import *
-import qtmax
-import sys
-import os
-sys.path.append(os.path.dirname(__file__))
+
+
 import create_turntable as ct
 import create_main_ui as main_ui
 
 from UI import icons
 from UI import tt_icons
 
-import importlib
+
+sys.path.append(os.path.dirname(__file__))
 importlib.reload(ct)
 importlib.reload(main_ui)
 
 DIR_PATH = os.path.dirname(__file__)
 LAYER_UI_PATH = DIR_PATH + r'\UI\layer_UI.ui'
 RENAME_UI_PATH = DIR_PATH + r'\UI\rename_UI.ui'
+
 
 class LayerUI():
     def __init__(self):

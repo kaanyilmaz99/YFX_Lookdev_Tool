@@ -1,6 +1,9 @@
+# The actual module which creates the turntable
+
 import pymxs
 from pymxs import attime
 from pymxs import runtime as rt
+
 
 class TT_Setup():
 

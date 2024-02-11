@@ -1,28 +1,42 @@
+#*********************************************************************
+# content   = creates the main working ui
+#             executes other scripts which build the turntables
+# todos     = wip turntable creation, more rendersettings implementation
+
+# version   = 0.1
+# date      = 2024-11-02
+#
+# author    = Kaan Yilmaz
+#*********************************************************************
+
+import os
+import sys
+import importlib
+
+
+import qtmax
 from pymxs import runtime as rt
+
+from PySide2.QtWidgets import *
 from PySide2 import QtWidgets, QtGui, QtUiTools, QtCore
 from PySide2.QtCore import Slot, Signal, QProcess, QObject
-from PySide2.QtWidgets import *
-import qtmax
-import sys
-import os
-import time
-sys.path.append(os.path.dirname(__file__))
+
+
+import create_layer_ui
+import create_turntable as ct
 
 from UI import icons
 from UI import tt_icons
-import create_turntable as ct
-# import create_asset_ui as ca
-import create_layer_ui
 
-import importlib
+
+sys.path.append(os.path.dirname(__file__))
 importlib.reload(ct)
-# importlib.reload(ca)
 importlib.reload(create_layer_ui)
-# importlib.reload(icons)
-
 
 DIR_PATH = os.path.dirname(__file__)
 MAIN_UI_PATH = DIR_PATH + r'\UI\turntable_UI.ui'
+# QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
+# QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
 class KyScene(QtWidgets.QDockWidget):
     def __init__(self, parent=None):
@@ -34,6 +48,7 @@ class KyScene(QtWidgets.QDockWidget):
 
     def initUI(self):
         # Load MainUI
+
         main_layout = QtWidgets.QVBoxLayout()
         self.wg_util = QtUiTools.QUiLoader().load(MAIN_UI_PATH)
         self.wg_util.setLayout(main_layout)
@@ -162,38 +177,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-    
-    # def add_object(self, mesh_ctrl):
-    #     treeWidget = self.wg_util.tree_objects
-    #     item_ctrl = QTreeWidgetItem()
-
-    #     total_polycount = 0
-    #     for mesh in mesh_ctrl.Children:
-    #         if str(rt.classOf(mesh)) == 'Editable_Poly':
-    #             item = QTreeWidgetItem()
-    #             polycount = str(rt.getPolygonCount(mesh)).split(',')[0]
-    #             polycount = polycount.replace('#', '')
-    #             polycount = polycount.replace('(', '')
-
-    #             item.setText(0, mesh.name)
-    #             item.setText(3, polycount)
-    #             item_ctrl.addChild(item)
-
-    #             total_polycount = total_polycount + int(polycount)
-            
-    #     item_ctrl.setText(0, mesh_ctrl.name)
-    #     item_ctrl.setText(3, str(total_polycount))
-    #     self.wg_util.tree_objects.addTopLevelItem(item_ctrl)
-
-    #     for index in range(0, item_ctrl.childCount()):
-    #         subdiv_spinbox = QtWidgets.QSpinBox()
-    #         disp_checkbox = QtWidgets.QCheckBox()
-
-    #         child = item_ctrl.child(index)
-    #         self.wg_util.tree_objects.setItemWidget(child, 1, subdiv_spinbox)
-    #         self.wg_util.tree_objects.setItemWidget(child, 2, disp_checkbox)
-
-        # checkbox = QtWidgets.QCheckBox()
-        # self.wg_util.tree_objects.setItemWidget(item_ctrl, 1, checkbox)

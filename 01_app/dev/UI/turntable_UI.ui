@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>471</width>
-    <height>331</height>
+    <width>412</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -38,7 +38,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_main">
       <property name="enabled">
@@ -75,7 +75,7 @@
           <number>10</number>
          </property>
          <property name="topMargin">
-          <number>0</number>
+          <number>10</number>
          </property>
          <property name="rightMargin">
           <number>10</number>
