@@ -38,6 +38,15 @@ MAIN_UI_PATH = DIR_PATH + r'\UI\turntable_UI.ui'
 # QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 # QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
+"""
+To be able to dock your widget to the 3dsmax Main UI, you need to use class parenting.
+1. You get the Max Main UI
+2. Create your own Main Window Class
+3. Parent your main window to the Max UI
+
+"""
+
+
 class KyScene(QtWidgets.QDockWidget):
     def __init__(self, parent=None):
         super(KyScene, self).__init__(parent)
