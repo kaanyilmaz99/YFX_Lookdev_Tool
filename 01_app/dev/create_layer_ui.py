@@ -4,7 +4,6 @@ import os
 import sys
 import importlib
 
-
 import qtmax
 from pymxs import runtime as rt
 

@@ -11,6 +11,7 @@
 
 import os
 import sys
+sys.path.append(os.path.dirname(__file__))
 import importlib
 
 
@@ -28,10 +29,9 @@ import create_turntable as ct
 from UI import icons
 from UI import tt_icons
 
-
-sys.path.append(os.path.dirname(__file__))
 importlib.reload(ct)
 importlib.reload(create_layer_ui)
+
 
 DIR_PATH = os.path.dirname(__file__)
 MAIN_UI_PATH = DIR_PATH + r'\UI\turntable_UI.ui'
@@ -133,8 +133,8 @@ class KyScene(QtWidgets.QDockWidget):
         ttSetup = ct.TT_Setup()
         import_object = ttSetup.import_object(object_path)
 
-        assetList = ca.AssetList()
-        assetList.add_asset(import_object)
+        # assetList = ca.AssetList()
+        # assetList.add_asset(import_object)
 
         self.wg_util.line_import.clear()
         self.wg_util.gBox_import.setEnabled(False)

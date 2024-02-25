@@ -1,8 +1,42 @@
 # The actual module which creates the turntable
-
+import json
+import os
 import pymxs
 from pymxs import attime
 from pymxs import runtime as rt
+
+
+DIR_PATH = os.path.dirname(__file__)
+json_path = DIR_PATH + r'\turntable_settings.json'
+
+'''
+user_data = {
+    "Start Frame" : 1001,
+    "End Frame" : 1200
+}
+
+with open(json_path, 'w') as outfile:
+    json.dump(user_data, outfile, indent=4)
+
+---------------------------------------------
+
+With this .json file you are able to use a easy readeable configuration to set up
+some specific parameters for this script. Currently I am only using it to set the animation Range
+of 3Dsmax and animate the domeLight once a layer is created. 
+
+Later I will use this also for resolutions and specific render settings as well.
+
+'''
+
+with open(json_path) as json_file:
+    data = json.load(json_file)
+
+start_frame = data['Start Frame']
+end_frame = data['End Frame']
+
+
+
+
 
 
 class TT_Setup():
@@ -10,7 +44,7 @@ class TT_Setup():
     def __init__(self):
         if rt.getNodeByName('TT_HDRIs_ctrl') == None:
             self.domeLights = []
-            rt.animationRange = rt.interval(1, 200)
+            rt.animationRange = rt.interval(start_frame, end_frame)
         else:
             self.domeLights = list(rt.getNodeByName('TT_HDRIs_ctrl').children)
         self.get_domeLights()
@@ -185,9 +219,9 @@ class TT_Setup():
         rt.select(node)
 
         with pymxs.animate(True):
-            with attime(101):
+            with attime(start_frame + 100):
                 rt.execute("in coordsys parent rotate $ (EulerAngles 0 0 0)")
-            with attime(200):
+            with attime(end_frame):
                 rt.execute("in coordsys parent rotate $ (EulerAngles 0 0 180)")
                 rt.execute("in coordsys parent rotate $ (EulerAngles 0 0 180)")
                 rt.execute("$.rotation.z_rotation.controller.keys.inTangentType = #linear")
