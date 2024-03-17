@@ -6,7 +6,7 @@
 # version   = 0.1
 # date      = 2024-11-02
 #
-# author    = Kaan Yilmaz
+# author    = Kaan Yilmaz main
 #*********************************************************************
 
 import os
