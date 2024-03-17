@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>412</width>
-    <height>320</height>
+    <width>392</width>
+    <height>340</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -38,7 +38,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_main">
       <property name="enabled">
@@ -310,14 +310,14 @@ QGroupBox:title:disabled{
                <number>0</number>
               </property>
               <item>
-               <widget class="QPushButton" name="btn_saveAs">
+               <widget class="QPushButton" name="btn_save_as">
                 <property name="text">
                  <string>Save As</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="btn_saveIncr">
+               <widget class="QPushButton" name="btn_save_incr">
                 <property name="text">
                  <string>Incremental Save</string>
                 </property>
@@ -345,109 +345,19 @@ QGroupBox:title:disabled{
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_assets">
-      <attribute name="title">
-       <string>Assets</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_14">
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_13">
-         <item>
-          <widget class="QGroupBox" name="gBox_assets">
-           <property name="styleSheet">
-            <string notr="true">QGroupBox{
-	border: 1px solid rgb(70, 70, 70);
-    border-radius: 8px;
-	margin-top: 9px;
-}
-
-QGroupBox:title{
-	color: white;
-	subcontrol-position: top center;
-	padding: 0 5px;
-	margin-top: -12px;
-}
-
-QGroupBox:title:disabled{
-	color: gray;
-	subcontrol-position: top center;
-	padding: 0 5px;
-	margin-top: -12px;
-}</string>
-           </property>
-           <property name="title">
-            <string>Assets</string>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_8">
-            <property name="topMargin">
-             <number>13</number>
-            </property>
-            <property name="bottomMargin">
-             <number>13</number>
-            </property>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_7">
-              <property name="leftMargin">
-               <number>10</number>
-              </property>
-              <property name="topMargin">
-               <number>6</number>
-              </property>
-              <property name="rightMargin">
-               <number>10</number>
-              </property>
-              <property name="bottomMargin">
-               <number>6</number>
-              </property>
-              <item>
-               <widget class="QTreeWidget" name="tree_objects">
-                <column>
-                 <property name="text">
-                  <string>Asset</string>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Polycount</string>
-                 </property>
-                </column>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_4">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="tab_layer">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <attribute name="title">
-       <string>Layers</string>
+       <string>HDRIs</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <property name="sizeConstraint">
         <enum>QLayout::SetDefaultConstraint</enum>
        </property>
        <item>
-        <layout class="QVBoxLayout" name="vLayout" stretch="0,1">
+        <layout class="QVBoxLayout" name="layout_layer" stretch="0,1">
          <property name="sizeConstraint">
           <enum>QLayout::SetDefaultConstraint</enum>
          </property>
@@ -490,7 +400,7 @@ QGroupBox:title:disabled{
 }</string>
            </property>
            <property name="title">
-            <string>Create new Layer</string>
+            <string>Create a new HDRI</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <property name="topMargin">
@@ -502,23 +412,35 @@ QGroupBox:title:disabled{
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout">
               <property name="leftMargin">
-               <number>10</number>
+               <number>5</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
               </property>
               <property name="rightMargin">
-               <number>10</number>
+               <number>5</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
               </property>
               <item>
                <widget class="QLineEdit" name="new_name_layer">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>20</height>
+                 </size>
+                </property>
                 <property name="maximumSize">
                  <size>
                   <width>16777215</width>
-                  <height>20</height>
+                  <height>25</height>
                  </size>
                 </property>
                 <property name="font">
@@ -528,7 +450,7 @@ QGroupBox:title:disabled{
                 </property>
                 <property name="styleSheet">
                  <string notr="true">QLineEdit {
-	border: 1px solid rgb(70, 70, 70);
+    border: 1px solid rgb(70, 70, 70);
     border-radius: 4px;
 }</string>
                 </property>
@@ -554,8 +476,14 @@ QGroupBox:title:disabled{
                   <height>0</height>
                  </size>
                 </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>120</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
-                 <string>Add Layer</string>
+                 <string>Add HDRI</string>
                 </property>
                 <property name="checkable">
                  <bool>false</bool>
@@ -651,7 +579,7 @@ QGroupBox:title:disabled{
                <number>0</number>
               </property>
               <item>
-               <widget class="QComboBox" name="comboBox">
+               <widget class="QComboBox" name="cBox_renderSettings">
                 <item>
                  <property name="text">
                   <string>Low</string>
@@ -665,11 +593,6 @@ QGroupBox:title:disabled{
                 <item>
                  <property name="text">
                   <string>High</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Very High</string>
                  </property>
                 </item>
                </widget>

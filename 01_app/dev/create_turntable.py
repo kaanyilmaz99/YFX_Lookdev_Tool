@@ -7,7 +7,9 @@ from pymxs import runtime as rt
 
 
 DIR_PATH = os.path.dirname(__file__)
-json_path = DIR_PATH + r'\turntable_settings.json'
+RS_PATH = DIR_PATH + r'\render_presets/'
+CFG_PATH = os.path.abspath(os.path.join(DIR_PATH, '..', 'cfg'))
+json_path = CFG_PATH + r'\turntable_settings.json'
 
 '''
 user_data = {
@@ -33,7 +35,6 @@ with open(json_path) as json_file:
 
 start_frame = data['Start Frame']
 end_frame = data['End Frame']
-
 
 
 
@@ -103,7 +104,7 @@ class TT_Setup():
         #Add domeLight to layer
         hdriLayer.addNode(self.domeLights[-1])
         #Animate domeLight
-        self.dome_rotation(self.domeLights[-1])
+        self.dome_rotation(self.domeLights[-1], 0)
 
     def remove_domeLight(self, name):
         for domeLight in self.domeLights:
@@ -203,28 +204,60 @@ class TT_Setup():
             camera_layer.addNode(tt_camera)
             camera_layer.addNode(tt_camera_target)
 
+    def inital_render_settings(self, rs_preset):
+        #Set VRay as current render
+        for renderer in rt.rendererClass.classes:
+            if "V_Ray" in str(renderer) and not "GPU" in str(renderer):
+                rt.renderers.current = renderer
+                vr = rt.renderers.current
+
+        if rs_preset == 'High':
+            rs_high_path = RS_PATH + "RS_High.rps"
+            rt.renderpresets.Load(0, rs_high_path, rt.BitArray(1, 2, 3, 4, 32))
+
+        elif rs_preset == 'Medium':
+            rs_high_path = RS_PATH + "RS_Medium.rps"
+            rt.renderpresets.Load(0, rs_high_path, rt.BitArray(1, 2, 3, 4, 32))
+
+        elif rs_preset == 'Low':
+            rs_high_path = RS_PATH + "RS_Low.rps"
+            rt.renderpresets.Load(0, rs_high_path, rt.BitArray(1, 2, 3, 4, 32))
+
     def camera_rotation(self, node):
         rt.select(node)
 
         with pymxs.animate(True):
-            with attime(1):
+            with attime(start_frame):
                 rt.execute("in coordsys parent rotate $ (EulerAngles 0 0 0)")
-            with attime(101):
+            with attime(end_frame - 100):
                 rt.execute("in coordsys parent rotate $ (EulerAngles 0 0 180)")
                 rt.execute("in coordsys parent rotate $ (EulerAngles 0 0 180)")
                 rt.execute("$.rotation.z_rotation.controller.keys.inTangentType = #linear")
                 rt.execute("$.rotation.z_rotation.controller.keys.outTangentType = #linear")
 
-    def dome_rotation(self, node):
-        rt.select(node)
+    def dome_rotation(self, domeLight, initial_rotation):
+        rt.select(domeLight)
 
         with pymxs.animate(True):
+            with attime(0):
+                domeLight.texmap.horizontalRotation = 0 + initial_rotation
+
             with attime(start_frame + 100):
-                rt.execute("in coordsys parent rotate $ (EulerAngles 0 0 0)")
+                domeLight.texmap.horizontalRotation = 0 + initial_rotation
+                rt.execute("$.texmap.horizontalRotation.controller.keys.inTangentType = #linear")
+                rt.execute("$.texmap.horizontalRotation.controller.keys.outTangentType = #linear")
+
             with attime(end_frame):
-                rt.execute("in coordsys parent rotate $ (EulerAngles 0 0 180)")
-                rt.execute("in coordsys parent rotate $ (EulerAngles 0 0 180)")
-                rt.execute("$.rotation.z_rotation.controller.keys.inTangentType = #linear")
-                rt.execute("$.rotation.z_rotation.controller.keys.outTangentType = #linear")
+                domeLight.texmap.horizontalRotation = 360 + initial_rotation
+                rt.execute("$.texmap.horizontalRotation.controller.keys.inTangentType = #linear")
+                rt.execute("$.texmap.horizontalRotation.controller.keys.outTangentType = #linear")
+
+    def get_dome_rotation(self, domeLight):
+        with pymxs.animate(False):
+            with attime(start_frame + 100):
+                initial_rotation = domeLight.texmap.horizontalRotation
+
+        return initial_rotation
+
 
 

@@ -8,7 +8,7 @@ from pymxs import runtime as rt
 import importlib
 importlib.reload(create_main_ui)
 
-MENU_NAME = 'KY-TOOLS'
+MENU_NAME = 'YFX'
 
 
 def create_menu():

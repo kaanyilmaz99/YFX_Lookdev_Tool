@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="turntable">
+    <file>icons/yfx_logo_white.png</file>
     <file>icons/folder_pressed.png</file>
     <file>icons/folder.png</file>
   </qresource>
