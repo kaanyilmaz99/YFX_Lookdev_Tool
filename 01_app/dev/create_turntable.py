@@ -37,22 +37,20 @@ start_frame = data['Start Frame']
 end_frame = data['End Frame']
 
 
-
-
-
 class TT_Setup():
 
     def __init__(self):
         if rt.getNodeByName('TT_HDRIs_ctrl') == None:
             self.domeLights = []
             rt.animationRange = rt.interval(start_frame, end_frame)
+            self.initial_frame_range(start_frame, end_frame)
         else:
             self.domeLights = list(rt.getNodeByName('TT_HDRIs_ctrl').children)
         self.get_domeLights()
         self.hdris = []
 
         self.create_controls()
-        self.create_ttCamera()
+        # self.create_ttCamera()
         self.create_groundPlane()
 
     def import_object(self, path):
@@ -67,7 +65,7 @@ class TT_Setup():
                 file_name = file_name.replace(file_format, '')
 
         mesh_ctrl = rt.dummy(name = file_name.capitalize() + '_ctrl')
-        mesh_ctrl.parent = rt.getNodeByName('TT_Assets_grp')
+        mesh_ctrl.parent = rt.getNodeByName('TT_Assets_ctrl')
 
         assets_layer = rt.LayerManager.getLayerFromName('0_Assets')
         mesh_layer = rt.LayerManager.newLayerFromName(file_name.capitalize())
@@ -141,10 +139,10 @@ class TT_Setup():
         if rt.getNodeByName('TT_Master_ctrl') == None:
             ctrl_ttMaster = rt.dummy(name='TT_Master_ctrl')
             ctrl_ttMaster.isHidden = True
-            ctrl_ttAssets = rt.dummy(name='TT_Assets_grp')
+            ctrl_ttAssets = rt.dummy(name='TT_Assets_ctrl')
             ctrl_ttAssets.parent = ctrl_ttMaster
             ctrl_ttAssets.isHidden = True
-            ctrl_ttRotation = rt.dummy(name='TT_Rotation_ctrl')
+            ctrl_ttRotation = rt.dummy(name='TT_Cameras_ctrl')
             ctrl_ttRotation.isHidden = True
             ctrl_ttRotation.parent = ctrl_ttMaster
             ctrl_ttHdris = rt.dummy(name='TT_HDRIs_ctrl')
@@ -159,12 +157,12 @@ class TT_Setup():
             control_layer.addNode(ctrl_ttHdris)
             control_layer.addNode(ctrl_ttAssets)
             #Create Animations
-            self.camera_rotation(ctrl_ttRotation)
+            self.asset_hrotation(ctrl_ttAssets)
         else:
             ctrl_ttMaster = rt.getNodeByName('TT_Master_ctrl')
-            ctrl_ttRotation = rt.getNodeByName('TT_Rotation_ctrl')
+            ctrl_ttRotation = rt.getNodeByName('TT_Cameras_ctrl')
             ctrl_ttHdris = rt.getNodeByName('TT_HDRIs_ctrl')
-            ctrl_ttAssets = rt.getNodeByName('TT_Assets_grp')
+            ctrl_ttAssets = rt.getNodeByName('TT_Assets_ctrl')
             #Return controls
             return [ctrl_ttMaster, ctrl_ttRotation, ctrl_ttHdris, ctrl_ttAssets]
 
@@ -183,47 +181,132 @@ class TT_Setup():
             ground_layer = rt.LayerManager.newLayerFromName('0_Ground')
             ground_layer.addNode(ground_plane)
 
-    def create_ttCamera(self):
-        if rt.getNodeByName('TT_Camera') == None:
-            tt_camera = rt.vrayPhysicalCamera()
-            tt_camera.name = 'TT_Camera'
-            tt_camera.targeted = True
-            tt_camera.type = 1
-            tt_camera.exposure = 0
-            tt_camera.focal_length = 40
-            tt_camera.film_width = 55
-            tt_camera.parent = self.create_controls()[1]
-            tt_camera.setmxsprop('pos.y', -100)
-            tt_camera.setmxsprop('pos.z', 50)
-            #Get Camera Target
-            tt_camera_target = rt.getNodeByName('TT_Camera.Target')
-            tt_camera_target.setmxsprop('pos.z', 50)
-            tt_camera_target.parent = self.create_controls()[1]
-            #Create and move into Layer
-            camera_layer = rt.LayerManager.newLayerFromName('0_Camera')
-            camera_layer.addNode(tt_camera)
-            camera_layer.addNode(tt_camera_target)
+    def create_camera(self, cam_name):
+        # if 'persp' in str(rt.viewport.getType()):
+        transform_matrix = rt.viewport.getTM()
+        inverted_matrix = rt.inverse(transform_matrix)
+
+        tt_camera = rt.vrayPhysicalCamera()
+        tt_camera.name = cam_name
+        tt_camera.targeted = False
+        tt_camera.type = 1
+        tt_camera.exposure = 0
+        tt_camera.focal_length = 40
+        tt_camera.film_width = 55
+        tt_camera.parent = self.create_controls()[1]
+        tt_camera.transform = inverted_matrix
+
+        #Get Camera Target
+        # tt_camera_target = rt.getNodeByName(cam_name + '.Target')
+        # tt_camera_target.setmxsprop('pos.z', 50)
+        # tt_camera_target.parent = self.create_controls()[1]
+
+        # Create and move into Layer
+        if rt.LayerManager.getLayerFromName('0_Cameras'):
+            camera_layer = rt.LayerManager.getLayerFromName('0_Cameras')
+        else:
+            camera_layer = rt.LayerManager.newLayerFromName('0_Cameras')
+        camera_layer.addNode(tt_camera)
+        # camera_layer.addNode(tt_camera_target)
+
+
+# RENDER SETTINGS ---------------------------------------------------------------------------------------------------------
 
     def inital_render_settings(self, rs_preset):
         #Set VRay as current render
+        vr = self.get_vray()
+        rt.rendTimeType = 3
+
+        if rs_preset == 'High':
+            rs_high_path = RS_PATH + "RS_High.rps"
+            rt.renderpresets.Load(0, rs_high_path, rt.BitArray(2, 3, 4, 32))
+
+        elif rs_preset == 'Medium':
+            rs_high_path = RS_PATH + "RS_Medium.rps"
+            rt.renderpresets.Load(0, rs_high_path, rt.BitArray(2, 3, 4, 32))
+
+        elif rs_preset == 'Low':
+            rs_high_path = RS_PATH + "RS_Low.rps"
+            rt.renderpresets.Load(0, rs_high_path, rt.BitArray(2, 3, 4, 32))
+
+    def get_vray(self):
         for renderer in rt.rendererClass.classes:
             if "V_Ray" in str(renderer) and not "GPU" in str(renderer):
                 rt.renderers.current = renderer
                 vr = rt.renderers.current
+        return vr
 
-        if rs_preset == 'High':
-            rs_high_path = RS_PATH + "RS_High.rps"
-            rt.renderpresets.Load(0, rs_high_path, rt.BitArray(1, 2, 3, 4, 32))
+    def initial_frame_range(self, start, end):
+        rt.rendStart = start
+        rt.endStart = end
 
-        elif rs_preset == 'Medium':
-            rs_high_path = RS_PATH + "RS_Medium.rps"
-            rt.renderpresets.Load(0, rs_high_path, rt.BitArray(1, 2, 3, 4, 32))
+    def change_resolution_width(self, width):
+        rt.renderWidth = width
+        rt.renderSceneDialog.update()
 
-        elif rs_preset == 'Low':
-            rs_high_path = RS_PATH + "RS_Low.rps"
-            rt.renderpresets.Load(0, rs_high_path, rt.BitArray(1, 2, 3, 4, 32))
+    def change_resolution_height(self, height):
+        rt.renderHeight = height
+        rt.renderSceneDialog.update()
 
-    def camera_rotation(self, node):
+    def change_startFrame(self, frame):
+        rt.rendStart = frame
+        rt.renderSceneDialog.update()
+
+    def change_endFrame(self, frame):
+        rt.rendEnd = frame
+        rt.renderSceneDialog.update()
+
+    def change_nthFrame(self, value):
+        rt.rendNThFrame = value
+        rt.renderSceneDialog.update()
+
+    def change_minSubdiv(self, value):
+        vr = self.get_vray()
+        vr.twoLevel_baseSubdivs = value
+
+    def change_maxSubdiv(self, value):
+        vr = self.get_vray()
+        vr.twoLevel_fineSubdivs = value
+
+    def change_noiseThreshold(self, value):
+        vr = self.get_vray()
+        vr.twoLevel_threshold = value
+
+    def change_shadingRate(self, value):
+        vr = self.get_vray()
+        vr.imageSampler_shadingRate = value
+
+    def change_bucketSize(self, value):
+        vr = self.get_vray()
+        vr.twoLevel_bucket_width = value
+
+    def toggle_lights(self, value):
+        vr = self.get_vray()
+        vr.options_lights = value
+
+    def toggle_gi(self, value):
+        vr = self.get_vray()
+        vr.gi_on = value
+
+    def toggle_shadows(self, value):
+        vr = self.get_vray()
+        vr.options_shadows = value
+
+    def toggle_displacement(self, value):
+        vr = self.get_vray()
+        vr.options_displacement = value
+
+    def change_colorspace(self, colorspace):
+        vr = self.get_vray()
+        if 'sRGB' in colorspace:
+            vr.options_rgbColorSpace = 1 
+
+        elif 'ACES' in colorspace:
+            vr.options_rgbColorSpace = 2
+
+# ANIMATION ---------------------------------------------------------------------------------------------------------
+
+    def asset_hrotation(self, node):
         rt.select(node)
 
         with pymxs.animate(True):

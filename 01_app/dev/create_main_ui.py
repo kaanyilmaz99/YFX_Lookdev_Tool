@@ -53,7 +53,7 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
         self.wg_util = QtUiTools.QUiLoader().load(MAIN_UI_PATH)
         self.wg_util.setLayout(main_layout)
         self.setWidget(self.wg_util)
-        self.resize(500, 100)
+        self.resize(393, 405)
 
         # Home Tab
         if rt.getNodeByName('TT_Master_ctrl'):
@@ -70,8 +70,34 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
         self.wg_util.new_name_layer.textEdited.connect(self.enable_add_layer)
         self.wg_util.btn_addLyr.clicked.connect(self.add_layer)
 
+        #Cameras Tab
+        self.wg_util.line_camera.textEdited.connect(self.enable_create_camera)
+        self.wg_util.pBtn_createCamera.clicked.connect(self.create_camera)
+
         #Render Tab
         self.wg_util.cBox_renderSettings.currentTextChanged.connect(self.render_setting_preset)
+
+        self.wg_util.pBtn_720.clicked.connect(self.clicked_resolution_720)
+        self.wg_util.pBtn_1080.clicked.connect(self.clicked_resolution_1080)
+        self.wg_util.pBtn_1440.clicked.connect(self.clicked_resolution_1440)
+        self.wg_util.pBtn_2160.clicked.connect(self.clicked_resolution_2160)
+        self.wg_util.sBox_width.valueChanged.connect(lambda: ct.TT_Setup().change_resolution_width(self.wg_util.sBox_width.value()))
+        self.wg_util.sBox_height.valueChanged.connect(lambda: ct.TT_Setup().change_resolution_height(self.wg_util.sBox_height.value()))
+        self.wg_util.sBox_startFrame.valueChanged.connect(lambda:ct.TT_Setup().change_startFrame(self.wg_util.sBox_startFrame.value()))
+        self.wg_util.sBox_endFrame.valueChanged.connect(lambda:ct.TT_Setup().change_endFrame(self.wg_util.sBox_endFrame.value()))
+        self.wg_util.sBox_nth.valueChanged.connect(lambda: ct.TT_Setup().change_nthFrame(self.wg_util.sBox_nth.value()))
+
+        self.wg_util.sBox_minSubdiv.valueChanged.connect(lambda: ct.TT_Setup().change_minSubdiv(self.wg_util.sBox_minSubdiv.value()))
+        self.wg_util.sBox_maxSubdiv.valueChanged.connect(lambda: ct.TT_Setup().change_maxSubdiv(self.wg_util.sBox_maxSubdiv.value()))
+        self.wg_util.dsBox_noise.valueChanged.connect(lambda: ct.TT_Setup().change_noiseThreshold(self.wg_util.dsBox_noise.value()))
+        self.wg_util.sBox_shading.valueChanged.connect(lambda: ct.TT_Setup().change_shadingRate(self.wg_util.sBox_shading.value()))
+        self.wg_util.sBox_bucket.valueChanged.connect(lambda: ct.TT_Setup().change_bucketSize(self.wg_util.sBox_bucket.value()))
+
+        self.wg_util.cBox_lights.stateChanged.connect(lambda: ct.TT_Setup().toggle_lights(self.wg_util.cBox_lights.isChecked()))
+        self.wg_util.cBox_gi.stateChanged.connect(lambda: ct.TT_Setup().toggle_gi(self.wg_util.cBox_gi.isChecked()))
+        self.wg_util.cBox_shadows.stateChanged.connect(lambda: ct.TT_Setup().toggle_shadows(self.wg_util.cBox_shadows.isChecked()))
+        self.wg_util.cBox_displacement.stateChanged.connect(lambda: ct.TT_Setup().toggle_displacement(self.wg_util.cBox_displacement.isChecked()))
+        self.wg_util.cBox_colorspace.currentTextChanged.connect(lambda: ct.TT_Setup().change_colorspace(self.wg_util.cBox_colorspace.currentText()))
 
     def import_object(self):
         object_path = QFileDialog.getOpenFileName(None, 'Import Object', 'C:\\', 
@@ -83,6 +109,16 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
             self.wg_util.btn_create_tt.setEnabled(True)
         else:
             self.wg_util.btn_create_tt.setEnabled(False)
+
+    def enable_create_camera(self):
+        if self.wg_util.line_camera.displayText():
+            self.wg_util.pBtn_createCamera.setEnabled(True)
+        else:
+            self.wg_util.pBtn_createCamera.setEnabled(False)
+
+    def create_camera(self):
+        cam_name = self.wg_util.line_camera.displayText()
+        ct.TT_Setup().create_camera(cam_name)
 
     def open_file(self):
         open_file = QFileDialog.getOpenFileName(None, 'Open Scene', 'C:\\', '3ds Max (*.max)')
@@ -127,13 +163,12 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
         ttSetup = ct.TT_Setup()
         import_object = ttSetup.import_object(object_path)
 
-        # assetList = ca.AssetList()
-        # assetList.add_asset(import_object)
-
         self.wg_util.line_import.clear()
         self.wg_util.gBox_import.setEnabled(False)
         self.wg_util.tab_layer.setEnabled(True)
         self.wg_util.gBox_newLayer.setEnabled(True)
+        
+        self.refresh_render_settings()
         return ttSetup
 
     def enable_add_layer(self):
@@ -152,6 +187,7 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
 
     def check_scene(self):
         if rt.getNodeByName('TT_HDRIs_ctrl') != None:
+            self.refresh_render_settings()
             self.domeLights = ct.TT_Setup().get_domeLights()
             self.wg_util.tab_layer.setEnabled(True)
             self.wg_util.gBox_newLayer.setEnabled(True)
@@ -168,6 +204,50 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
     def render_setting_preset(self):
         rs_preset = str(self.wg_util.cBox_renderSettings.currentText())
         ct.TT_Setup().inital_render_settings(rs_preset)
+        self.refresh_render_settings()
+
+    def refresh_render_settings(self):
+        vr = ct.TT_Setup().get_vray()
+        rt.rendTimeType = 3
+
+        self.wg_util.sBox_width.setValue(rt.renderWidth)
+        self.wg_util.sBox_height.setValue(rt.renderHeight)
+
+        self.wg_util.sBox_startFrame.setValue(rt.rendStart)
+        self.wg_util.sBox_endFrame.setValue(rt.rendEnd)
+        self.wg_util.sBox_nth.setValue(rt.rendNThFrame)
+
+        self.wg_util.sBox_minSubdiv.setValue(vr.twoLevel_baseSubdivs)
+        self.wg_util.sBox_maxSubdiv.setValue(vr.twoLevel_fineSubdivs)
+        self.wg_util.dsBox_noise.setValue(vr.twoLevel_threshold)
+        self.wg_util.sBox_shading.setValue(vr.imageSampler_shadingRate)
+        self.wg_util.sBox_bucket.setValue(vr.twoLevel_bucket_width)
+        self.wg_util.cBox_lights.setChecked(vr.options_lights)
+        self.wg_util.cBox_gi.setChecked(vr.gi_on)
+        self.wg_util.cBox_shadows.setChecked(vr.options_shadows)
+        self.wg_util.cBox_displacement.setChecked(vr.options_displacement)
+        self.wg_util.cBox_colorspace.setCurrentIndex(self.set_colorspace())
+
+    def clicked_resolution_720(self):
+        self.wg_util.sBox_width.setValue(1280)
+        self.wg_util.sBox_height.setValue(720)
+
+    def clicked_resolution_1080(self):
+        self.wg_util.sBox_width.setValue(1920)
+        self.wg_util.sBox_height.setValue(1080)
+
+    def clicked_resolution_1440(self):
+        self.wg_util.sBox_width.setValue(2560)
+        self.wg_util.sBox_height.setValue(1440)
+
+    def clicked_resolution_2160(self):
+        self.wg_util.sBox_width.setValue(3840)
+        self.wg_util.sBox_height.setValue(2160)
+
+    def set_colorspace(self):
+        vr = ct.TT_Setup().get_vray()
+        index = vr.options_rgbColorSpace - 1
+        return index
 
 class LayerUI(YFX_LDEV_UI):
     def __init__(self, parent):
@@ -181,7 +261,6 @@ class LayerUI(YFX_LDEV_UI):
 
     def check_lyr_name(self, new_lyr_name):
         # Check if LayerName already exists
-
         for lyr in self.get_lyr_list():
             if lyr.name == new_lyr_name:
                 QMessageBox.warning(None, 'Warning', 'Name already exists!')
@@ -231,7 +310,7 @@ class LayerUI(YFX_LDEV_UI):
             index = index + 1
 
     def toggleLayer(self, lyr):    
-        #Specially for the case when checking the scene
+        # Specially for the case when checking the scene
         btn_enable = self.parent.findChild(QPushButton, 'btn_enable_' + lyr)
         btn_enable.setChecked(True)
 
@@ -283,13 +362,10 @@ class LayerUI(YFX_LDEV_UI):
                 domeLight.multiplier = self.wg_options.sBox_multiplier.value()
                 ct.TT_Setup().dome_rotation(domeLight, self.wg_options.sBox_rotation.value())
                 # domeLight.name = self.wg_options.line_rename.text()
-
                 # lyr_gBox = self.wg_util.findChild(QGroupBox, 'lyr_gBox_' + lyr_name)
                 # lyr_gBox.setTitle(self.wg_options.line_rename.text())
                 
                 self.wg_options.close()
-
-
 
 
 def main():
