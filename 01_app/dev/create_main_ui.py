@@ -23,14 +23,14 @@ from PySide2.QtCore import Slot, Signal, QProcess, QObject
 from PySide2.QtGui import *
 
 
-# import create_layer_ui
+import create_layer_ui as cl
 import create_turntable as ct
 
 from UI import icons
 from UI import tt_icons
 
 importlib.reload(ct)
-# importlib.reload(create_layer_ui)
+importlib.reload(cl)
 
 
 DIR_PATH = os.path.dirname(__file__)
@@ -179,7 +179,7 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
 
     def add_layer(self):
         lyr_name = self.wg_util.new_name_layer.displayText()
-        lyr_ui = LayerUI(parent=self)
+        lyr_ui = cl.LayerUI(parent=self)
         if lyr_ui.check_lyr_name(lyr_name) != False:
             lyr_ui.create_layer(lyr_name, len(lyr_ui.get_lyr_list()) + 1)
             ct.TT_Setup().add_domeLight(lyr_name)
@@ -192,7 +192,7 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
             self.wg_util.tab_layer.setEnabled(True)
             self.wg_util.gBox_newLayer.setEnabled(True)
             if self.domeLights:
-                lyr_ui = LayerUI(parent=self)
+                lyr_ui = cl.LayerUI(parent=self)
                 index = 1
                 for domeLight in self.domeLights:
                     lyr_ui.create_layer(domeLight.name, index)
@@ -248,124 +248,6 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
         vr = ct.TT_Setup().get_vray()
         index = vr.options_rgbColorSpace - 1
         return index
-
-class LayerUI(YFX_LDEV_UI):
-    def __init__(self, parent):
-        super(LayerUI, self).__init__()
-        self.parent = parent
-        self.lyr_number = str(len(self.get_lyr_list()))
-
-    def get_lyr_list(self):
-        lyr_list = ct.TT_Setup().get_domeLights()
-
-    def check_lyr_name(self, new_lyr_name):
-        # Check if LayerName already exists
-        for lyr in self.get_lyr_list():
-            if lyr.name == new_lyr_name:
-                QMessageBox.warning(None, 'Warning', 'Name already exists!')
-                return False
-
-    def create_layer(self, lyr_name, lyr_number):
-        layout_layer = self.parent.findChild(QVBoxLayout, 'layout_layer')
-
-        self.wg_layer = QtUiTools.QUiLoader().load(LAYER_UI_PATH)
-        self.wg_layer.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-
-        self.wg_layer.lyr_gBox.setTitle(lyr_name)
-        self.wg_layer.lyr_gBox.setObjectName('lyr_gBox_' + lyr_name)
-        self.wg_layer.btn_path.setObjectName('btn_path_' + lyr_name)
-        self.wg_layer.line_hdri.setObjectName('line_hdri_' + lyr_name)
-        self.wg_layer.btn_remove.setObjectName('btn_remove_' + lyr_name)
-        self.wg_layer.btn_enable.setObjectName('btn_enable_' + lyr_name)
-        self.wg_layer.btn_options.setObjectName('btn_options_' + lyr_name)
-
-        layout_layer.insertWidget(lyr_number, self.wg_layer)
-
-        btn_remove = self.parent.findChild(QPushButton, 'btn_remove_' + lyr_name)
-        btn_remove.clicked.connect(lambda: self.remove_layer(lyr_name))
-        btn_enable = self.parent.findChild(QPushButton, 'btn_enable_' + lyr_name)
-        btn_enable.clicked.connect(lambda: self.isolateLayer(lyr_name))
-        btn_path = self.parent.findChild(QPushButton, 'btn_path_' + lyr_name)
-        btn_path.clicked.connect(lambda: self.browseHDRI(lyr_name))
-        btn_options = self.parent.findChild(QPushButton, 'btn_options_' + lyr_name)
-        btn_options.clicked.connect(lambda: self.layer_options_ui(lyr_name))
-
-    def remove_layer(self, lyr_name):
-        # Remove HDRI
-        ct.TT_Setup().remove_domeLight(lyr_name)
-
-        # Remove Layer UI
-        lyr_gBox = self.parent.findChild(QGroupBox, 'lyr_gBox_' + lyr_name)
-        lyr_gBox.deleteLater()
-        btn_remove = self.parent.findChild(QPushButton, 'btn_remove_' + lyr_name)
-        btn_remove.clicked.disconnect()
-
-        # Reposition Groupboxes
-        layout_layer = self.parent.findChild(QVBoxLayout, 'layout_layer')
-        index = 1
-        for lyr in self.get_lyr_list():
-            lyr_gBox = self.parent.findChild(QGroupBox, 'lyr_gBox_' + lyr.name)
-            layout_layer.insertWidget(index, lyr_gBox)
-            index = index + 1
-
-    def toggleLayer(self, lyr):    
-        # Specially for the case when checking the scene
-        btn_enable = self.parent.findChild(QPushButton, 'btn_enable_' + lyr)
-        btn_enable.setChecked(True)
-
-    def isolateLayer(self, lyr_current):
-        for lyr in self.get_lyr_list():
-            btn_enable = self.parent.findChild(QPushButton, 'btn_enable_' + lyr.name)
-            if lyr.name == lyr_current:
-                ct.TT_Setup().enable_domeLight(lyr.name)
-                btn_enable.setChecked(True)
-            else:
-                btn_enable.setChecked(False)
-                ct.TT_Setup().disable_domeLight(lyr.name)
-
-    def getHDRI(self, lyr):
-        lyr_name = lyr.name
-        lyr_bitmap = lyr.texmap
-        hdri_path = lyr_bitmap.HDRIMapName
-        line_hdri = self.parent.findChild(QLineEdit, 'line_hdri_' + lyr_name)
-        line_hdri.setText(hdri_path)
-
-    def browseHDRI(self, lyr_name):
-        hdri_path = QFileDialog.getOpenFileName(None, 'Choose HDRI', 'C:\\', 'HDRI File (*.exr *.hdr *.jpg *.png *.tif *.tiff)')
-        if hdri_path[0] != '':
-            line_hdri = self.parent.findChild(QLineEdit, 'line_hdri_' + lyr_name)
-            line_hdri.setText(hdri_path[0])
-
-        # Change HDRI
-        ct.TT_Setup().create_hdri_bitmap(lyr_name, hdri_path[0])
-
-    def layer_options_ui(self, lyr_name):
-        self.wg_options = QtUiTools.QUiLoader().load(LAYER_OPTIONS_UI_PATH)
-        self.wg_options.setWindowFlag(QtCore.Qt.WindowContextHelpButtonHint, False)
-        self.wg_options.btn_apply.clicked.connect(lambda: self.layer_options_ui_confirm(lyr_name))
-
-        for domeLight in self.get_lyr_list():
-            if domeLight.name == lyr_name:
-                self.wg_options.setWindowTitle(lyr_name + ' - HDRI Options')
-                self.wg_options.line_rename.setText(lyr_name)
-                self.wg_options.cBox_invisible.setChecked(domeLight.invisible)
-                self.wg_options.sBox_multiplier.setValue(domeLight.multiplier)
-                self.wg_options.sBox_rotation.setValue(ct.TT_Setup().get_dome_rotation(domeLight))
-
-        self.wg_options.show()
-
-    def layer_options_ui_confirm(self, lyr_name):
-        for domeLight in self.get_lyr_list():
-            if domeLight.name == lyr_name:
-                domeLight.invisible = self.wg_options.cBox_invisible.isChecked()
-                domeLight.multiplier = self.wg_options.sBox_multiplier.value()
-                ct.TT_Setup().dome_rotation(domeLight, self.wg_options.sBox_rotation.value())
-                # domeLight.name = self.wg_options.line_rename.text()
-                # lyr_gBox = self.wg_util.findChild(QGroupBox, 'lyr_gBox_' + lyr_name)
-                # lyr_gBox.setTitle(self.wg_options.line_rename.text())
-                
-                self.wg_options.close()
-
 
 def main():
     main_window = qtmax.GetQMaxMainWindow()
