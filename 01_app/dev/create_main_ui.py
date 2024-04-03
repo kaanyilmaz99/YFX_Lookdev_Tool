@@ -22,7 +22,6 @@ from PySide2 import QtWidgets, QtGui, QtUiTools, QtCore
 from PySide2.QtCore import Slot, Signal, QProcess, QObject
 from PySide2.QtGui import *
 
-
 import create_layer_ui as cl
 import create_turntable as ct
 
@@ -32,11 +31,8 @@ from UI import tt_icons
 importlib.reload(ct)
 importlib.reload(cl)
 
-
 DIR_PATH = os.path.dirname(__file__)
 MAIN_UI_PATH = DIR_PATH + r'\UI\turntable_UI.ui'
-LAYER_UI_PATH = DIR_PATH + r'\UI\layer_UI.ui'
-LAYER_OPTIONS_UI_PATH = DIR_PATH + r'\UI\layer_options_UI.ui'
 
 
 class YFX_LDEV_UI(QtWidgets.QDockWidget):

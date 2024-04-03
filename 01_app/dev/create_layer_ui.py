@@ -25,14 +25,13 @@ importlib.reload(main_ui)
 
 DIR_PATH = os.path.dirname(__file__)
 LAYER_UI_PATH = DIR_PATH + r'\UI\layer_UI.ui'
-RENAME_UI_PATH = DIR_PATH + r'\UI\rename_UI.ui'
+LAYER_OPTIONS_UI_PATH = DIR_PATH + r'\UI\layer_options_UI.ui'
 
 
-class LayerUI():
-    def __init__(self):
-        main_window = qtmax.GetQMaxMainWindow()
-        self.wg_util = main_window.findChild(QtWidgets.QDockWidget, 'KY_TT')
-        print(self.wg_util)
+class LayerUI(main_ui.YFX_LDEV_UI):
+    def __init__(self, parent=None):
+        super(LayerUI, self).__init__(parent)
+        self.wg_util = parent
         self.lyr_number = str(len(self.get_lyr_list()))
 
     def check_lyr_name(self, new_lyr_name):
@@ -53,6 +52,7 @@ class LayerUI():
         self.wg_layer.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
         self.wg_layer.lyr_gBox.setTitle(lyr_name)
+        self.wg_layer.setObjectName('wg_layer_' + lyr_name)
         self.wg_layer.lyr_gBox.setObjectName('lyr_gBox_' + lyr_name)
         self.wg_layer.btn_path.setObjectName('btn_path_' + lyr_name)
         self.wg_layer.line_hdri.setObjectName('line_hdri_' + lyr_name)
@@ -68,27 +68,25 @@ class LayerUI():
         btn_path = self.wg_util.findChild(QPushButton, 'btn_path_' + lyr_name)
         btn_path.clicked.connect(lambda: self.browseHDRI(lyr_name))
         btn_options = self.wg_util.findChild(QPushButton, 'btn_options_' + lyr_name)
-        btn_options.clicked.connect(lambda: self.options_ui(lyr_name))
+        btn_options.clicked.connect(lambda: self.layer_options_ui(lyr_name))
 
     def remove_layer(self, lyr_name):
         # Remove HDRI
         ct.TT_Setup().remove_domeLight(lyr_name)
+        layout_layer = self.wg_util.findChild(QVBoxLayout, 'layout_layer')
 
         # Remove Layer UI
-        lyr_gBox = self.wg_util.findChild(QGroupBox, 'lyr_gBox_' + lyr_name)
-        lyr_gBox.deleteLater()
-        btn_remove = self.wg_util.findChild(QPushButton, 'btn_remove_' + lyr_name)
-        btn_remove.clicked.disconnect()
+        wg_layer = self.wg_util.findChild(QWidget, 'wg_layer_' + lyr_name)
+        wg_layer.deleteLater()
 
         # Reposition Groupboxes
-        layout_layer = self.wg_util.findChild(QVBoxLayout, 'layout_layer')
         index = 1
         for lyr in self.get_lyr_list():
-            lyr_gBox = self.wg_util.findChild(QGroupBox, 'lyr_gBox_' + lyr.name)
-            layout_layer.insertWidget(index, lyr_gBox)
+            wg_layer = self.wg_util.findChild(QWidget, 'wg_layer_' + lyr.name)
+            layout_layer.insertWidget(index, wg_layer)
             index = index + 1
 
-    def toggleLayer(self, lyr):    #Specially for the case when checking the scene
+    def toggleLayer(self, lyr):    # Specially for the case when checking the scene
         btn_enable = self.wg_util.findChild(QPushButton, 'btn_enable_' + lyr)
         btn_enable.setChecked(True)
 
@@ -118,12 +116,21 @@ class LayerUI():
         # Change HDRI
         ct.TT_Setup().create_hdri_bitmap(lyr_name, hdri_path[0])
 
-    def layer_options_ui(self, lyr_name):
-        self.wg_options = QtUiTools.QUiLoader().load(RENAME_UI_PATH)
-        self.wg_options.setWindowFlag(QtCore.Qt.WindowContextHelpButtonHint, False)
-        self.wg_options.btn_apply.clicked.connect(lambda: self.layer_options_ui_confirm(lyr_name))
-        self.wg_options.show()
+    def get_wg_layer_index(self, lyr_name):
+        layout_layer = self.wg_util.findChild(QVBoxLayout, 'layout_layer')
+        for i in range(layout_layer.count()):
+            layout_item = layout_layer.itemAt(i).widget()
+            if lyr_name in layout_item.objectName():
+                return(i)
 
+    def layer_options_ui(self, lyr_name):
+        self.wg_options = QtUiTools.QUiLoader().load(LAYER_OPTIONS_UI_PATH)
+        self.wg_options.setWindowFlag(QtCore.Qt.WindowContextHelpButtonHint, False)
+
+        lyr_index = self.get_wg_layer_index(lyr_name)
+        self.wg_options.btn_apply.clicked.connect(lambda: self.layer_options_ui_confirm(lyr_name, lyr_index))
+        self.wg_options.show()
+        
         for domeLight in self.get_lyr_list():
             if domeLight.name == lyr_name:
                 bitmap = domeLight.texmap
@@ -133,48 +140,31 @@ class LayerUI():
                 self.wg_options.sBox_multiplier.setValue(domeLight.multiplier)
                 self.wg_options.sBox_rotation.setValue(bitmap.horizontalRotation)
 
-    def layer_options_ui_confirm(self, lyr_name):
+    def layer_options_ui_confirm(self, lyr_name, lyr_index):
+        print(lyr_index)
+        new_lyr_name = self.wg_options.line_rename.displayText()
         for domeLight in self.get_lyr_list():
             if domeLight.name == lyr_name:
                 domeLight.invisible = self.wg_options.cBox_invisible.isChecked()
                 domeLight.multiplier = self.wg_options.sBox_multiplier.value()
                 ct.TT_Setup().dome_rotation(domeLight, self.wg_options.sBox_rotation.value())
-                # domeLight.name = self.wg_options.line_rename.text()
-                # lyr_gBox = self.wg_util.findChild(QGroupBox, 'lyr_gBox_' + lyr_name)
-                # lyr_gBox.setTitle(self.wg_options.line_rename.text())
-                self.wg_options.close()
 
+                if lyr_name != new_lyr_name and self.check_lyr_name(new_lyr_name) != False:
+                    domeLight.name = new_lyr_name
+                    self.rename_confirm(lyr_name, lyr_index, new_lyr_name)
+                    self.wg_options.close()
 
-    # def rename_confirm(self, self.lyr_name):
-    #     new_name = self.wg_rename.line_newName.displayText()
-    #     for layer in self.lyr_gBoxs:
-    #         if layer.objectName() == 'lyr_gBox_' + new_name:
-    #             QMessageBox.warning(None, 'Warning', 'Name already exists!')
-    #             return None
+                elif lyr_name == new_lyr_name:
+                    self.wg_options.close()
 
-    #     groupBox = self.findChild(QGroupBox, 'lyr_gBox_' + self.lyr_name)
-    #     line_hdri = self.findChild(QLineEdit, 'line_hdri_' + self.lyr_name)
-    #     btn_remove = self.findChild(QPushButton, 'btn_remove_' + self.lyr_name)
-    #     btn_enable = self.findChild(QPushButton, 'btn_enable_' + self.lyr_name)
-    #     btn_path = self.findChild(QPushButton, 'btn_path_' + self.lyr_name)
-    #     btn_rename = self.findChild(QPushButton, 'btn_rename_' + self.lyr_name)
+    def rename_confirm(self, lyr_name, lyr_index, new_lyr_name):
 
-    #     groupBox.setObjectName('lyr_gBox_' + new_name)
-    #     groupBox.setTitle(new_name)
-    #     line_hdri.setObjectName('line_hdri_' + new_name)
-    #     btn_remove.clicked.disconnect()
-    #     btn_remove.setObjectName('btn_remove_' + new_name)
-    #     btn_remove.clicked.connect(lambda: self.remove_layer(new_name))
-    #     btn_enable.clicked.disconnect()
-    #     btn_enable.setObjectName('btn_enable_' + new_name)
-    #     btn_enable.clicked.connect(lambda: self.isolateLayer(new_name))
-    #     btn_path.clicked.disconnect()
-    #     btn_path.setObjectName('btn_path_' + new_name)
-    #     btn_path.clicked.connect(lambda: self.browseHDRI(new_name))
-    #     btn_rename.clicked.disconnect()
-    #     btn_rename.setObjectName('btn_rename_' + new_name)
-    #     btn_rename.clicked.connect(lambda: self.rename_ui(new_name))
+        wg_layer = self.wg_util.findChild(QWidget, 'wg_layer_' + lyr_name)
+        btn_enable = self.wg_util.findChild(QPushButton, 'btn_enable_' + lyr_name)
+        isolate = btn_enable.isChecked()
 
-    #     ct.TT_Setup().rename_domeLights(self.lyr_name, new_name)
-    #     self.wg_rename.close()
+        wg_layer.deleteLater()
+        self.create_layer(new_lyr_name, lyr_index)
+        new_btn_enable = self.wg_util.findChild(QPushButton, 'btn_enable_' + new_lyr_name)
+        new_btn_enable.setChecked(isolate)
 
