@@ -257,7 +257,6 @@ class LayerUI(YFX_LDEV_UI):
 
     def get_lyr_list(self):
         lyr_list = ct.TT_Setup().get_domeLights()
-        return lyr_list
 
     def check_lyr_name(self, new_lyr_name):
         # Check if LayerName already exists
