@@ -1,35 +1,53 @@
-#*********************************************************************
-# content   = creates the main working ui
-#             executes other scripts which build the turntables
-# todos     = wip turntable creation, more rendersettings implementation
+#****************************************************************************************************
+# content:        Creates the MainUI for the YFX Lookdev Tool. Interacting with it
+#                 executes other modules and dynamically adds new UI elements.
 
-# version   = 0.1
-# date      = 2024-11-02
-#
-# author    = Kaan Yilmaz
-#*********************************************************************
+# dependencies:   PySide2/PyQt, 3dsMax and maxscript
+
+# how to:         This module can be executed in 3dsMax with the 'Run Script' option directly. 
+#                 By default it runs after clicking the 'YFK Turntable' button in the main menu.
+
+# todos:          Add a 'Texture' tab to the MainUI, which will give you the option to
+#                 import any texture and connect them to the material automatically.
+
+# version:        v0.9
+# date:           2024-11-02
+
+# author:         Kaan Yilmaz | kaan.yilmaz99@t-online.de
+#****************************************************************************************************
 
 import os
 import sys
-sys.path.append(os.path.dirname(__file__))
+sys.path.append(os.path.dirname(__file__))                       # Can be deleted later
 import importlib
+
 
 import qtmax
 from pymxs import runtime as rt
 
+from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from PySide2 import QtWidgets, QtGui, QtUiTools, QtCore
 from PySide2.QtCore import Slot, Signal, QProcess, QObject
-from PySide2.QtGui import *
 
+
+import render_setup as rs
+import create_asset_ui as ca
 import create_layer_ui as cl
 import create_turntable as ct
+import create_camera_ui as cc
+import default_max_functions as dmf
 
 from UI import icons
 from UI import tt_icons
+from UI import camera_icons
 
-importlib.reload(ct)
-importlib.reload(cl)
+importlib.reload(dmf)                                            # Can be deleted later 
+importlib.reload(cl)                                             # Can be deleted later
+importlib.reload(ct)                                             # Can be deleted later
+importlib.reload(cc)                                             # Can be deleted later
+importlib.reload(ca)                                             # Can be deleted later
+importlib.reload(rs)                                             # Can be deleted later
 
 DIR_PATH = os.path.dirname(__file__)
 MAIN_UI_PATH = DIR_PATH + r'\UI\turntable_UI.ui'
@@ -48,124 +66,132 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
         main_layout = QtWidgets.QVBoxLayout()
         self.wg_util = QtUiTools.QUiLoader().load(MAIN_UI_PATH)
         self.wg_util.setLayout(main_layout)
-        self.setWidget(self.wg_util)
-        self.resize(393, 405)
+        self.setWidget(self.wg_util)                                                                                                                                                                                                                                                            
+        self.resize(461, 540)
 
         # Home Tab
-        if rt.getNodeByName('TT_Master_ctrl'):
+        if dmf.get_tt_setup():
+            self.wg_util.btn_save_as.setEnabled(True)
             self.wg_util.gBox_import.setEnabled(False)
+            self.wg_util.btn_renderout.setEnabled(True)
 
-        self.wg_util.btn_import.clicked.connect(self.import_object)
+            output_path = self.get_output_path()
+            self.wg_util.lEdit_render.setText(output_path)
+
+        self.wg_util.btn_import.clicked.connect(self.set_import_path)
         self.wg_util.btn_create_tt.clicked.connect(self.setup_tt)
-        self.wg_util.line_import.textChanged.connect(self.enable_create_tt)
-        self.wg_util.btn_save_as.clicked.connect(self.save_as)
-        self.wg_util.btn_save_incr.clicked.connect(self.save_incremental)
-        self.wg_util.btn_openFile.clicked.connect(self.open_file)
+        self.wg_util.line_import.textChanged.connect(self.toggle_create_tt_button)
+        self.wg_util.btn_save_as.clicked.connect(self.btn_save_as_pressed)
+        self.wg_util.btn_save_incr.clicked.connect(dmf.save_incremental)
+        self.wg_util.btn_openFile.clicked.connect(self.btn_open_file_pressed)
+
+        # Asset Tab
+        self.wg_util.btn_asset_choose.clicked.connect(self.set_asset_path)
+        self.wg_util.line_asset.textChanged.connect(self.enable_add_asset)
+        self.wg_util.btn_asset_import.clicked.connect(lambda: self.import_asset(self.wg_util.line_asset.displayText()))
 
         # Layers Tab
         self.wg_util.new_name_layer.textEdited.connect(self.enable_add_layer)
         self.wg_util.btn_addLyr.clicked.connect(self.add_layer)
 
         #Cameras Tab
-        self.wg_util.line_camera.textEdited.connect(self.enable_create_camera)
-        self.wg_util.pBtn_createCamera.clicked.connect(self.create_camera)
+        self.wg_util.line_camera.textEdited.connect(self.enable_add_camera)
+        self.wg_util.pBtn_createCamera.clicked.connect(self.add_camera)
 
         #Render Tab
-        self.wg_util.cBox_renderSettings.currentTextChanged.connect(self.render_setting_preset)
+        self.wg_util.btn_render_settings.clicked.connect(self.toggle_render_settings)
+        self.wg_util.btn_aovs.clicked.connect(self.toggle_aovs)
+        self.wg_util.btn_render_path.clicked.connect(self.set_render_path)
+        self.wg_util.lEdit_render.textChanged.connect(self.enable_render)
+        self.wg_util.btn_renderout.clicked.connect(dmf.start_render)
 
-        self.wg_util.pBtn_720.clicked.connect(self.clicked_resolution_720)
-        self.wg_util.pBtn_1080.clicked.connect(self.clicked_resolution_1080)
-        self.wg_util.pBtn_1440.clicked.connect(self.clicked_resolution_1440)
-        self.wg_util.pBtn_2160.clicked.connect(self.clicked_resolution_2160)
-        self.wg_util.sBox_width.valueChanged.connect(lambda: ct.TT_Setup().change_resolution_width(self.wg_util.sBox_width.value()))
-        self.wg_util.sBox_height.valueChanged.connect(lambda: ct.TT_Setup().change_resolution_height(self.wg_util.sBox_height.value()))
-        self.wg_util.sBox_startFrame.valueChanged.connect(lambda:ct.TT_Setup().change_startFrame(self.wg_util.sBox_startFrame.value()))
-        self.wg_util.sBox_endFrame.valueChanged.connect(lambda:ct.TT_Setup().change_endFrame(self.wg_util.sBox_endFrame.value()))
-        self.wg_util.sBox_nth.valueChanged.connect(lambda: ct.TT_Setup().change_nthFrame(self.wg_util.sBox_nth.value()))
+# HOME TAB ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
-        self.wg_util.sBox_minSubdiv.valueChanged.connect(lambda: ct.TT_Setup().change_minSubdiv(self.wg_util.sBox_minSubdiv.value()))
-        self.wg_util.sBox_maxSubdiv.valueChanged.connect(lambda: ct.TT_Setup().change_maxSubdiv(self.wg_util.sBox_maxSubdiv.value()))
-        self.wg_util.dsBox_noise.valueChanged.connect(lambda: ct.TT_Setup().change_noiseThreshold(self.wg_util.dsBox_noise.value()))
-        self.wg_util.sBox_shading.valueChanged.connect(lambda: ct.TT_Setup().change_shadingRate(self.wg_util.sBox_shading.value()))
-        self.wg_util.sBox_bucket.valueChanged.connect(lambda: ct.TT_Setup().change_bucketSize(self.wg_util.sBox_bucket.value()))
-
-        self.wg_util.cBox_lights.stateChanged.connect(lambda: ct.TT_Setup().toggle_lights(self.wg_util.cBox_lights.isChecked()))
-        self.wg_util.cBox_gi.stateChanged.connect(lambda: ct.TT_Setup().toggle_gi(self.wg_util.cBox_gi.isChecked()))
-        self.wg_util.cBox_shadows.stateChanged.connect(lambda: ct.TT_Setup().toggle_shadows(self.wg_util.cBox_shadows.isChecked()))
-        self.wg_util.cBox_displacement.stateChanged.connect(lambda: ct.TT_Setup().toggle_displacement(self.wg_util.cBox_displacement.isChecked()))
-        self.wg_util.cBox_colorspace.currentTextChanged.connect(lambda: ct.TT_Setup().change_colorspace(self.wg_util.cBox_colorspace.currentText()))
-
-    def import_object(self):
+    def set_import_path(self):
         object_path = QFileDialog.getOpenFileName(None, 'Import Object', 'C:\\', 
                       'All Formats (*.obj *.fbx *.abc *.max *mdl)')
         self.wg_util.line_import.setText(object_path[0])
 
-    def enable_create_tt(self):
+    def toggle_create_tt_button(self):
         if self.wg_util.line_import.displayText():
             self.wg_util.btn_create_tt.setEnabled(True)
         else:
             self.wg_util.btn_create_tt.setEnabled(False)
 
-    def enable_create_camera(self):
-        if self.wg_util.line_camera.displayText():
-            self.wg_util.pBtn_createCamera.setEnabled(True)
-        else:
-            self.wg_util.pBtn_createCamera.setEnabled(False)
-
-    def create_camera(self):
-        cam_name = self.wg_util.line_camera.displayText()
-        ct.TT_Setup().create_camera(cam_name)
-
-    def open_file(self):
+    def btn_open_file_pressed(self):
         open_file = QFileDialog.getOpenFileName(None, 'Open Scene', 'C:\\', '3ds Max (*.max)')
         if open_file[0] != '':
-            rt.checkForSave()
-            rt.loadMaxFile(open_file[0], allowPrompts = True)
+            dmf.open_max_file(open_file[0])
 
-    def save_as(self):
+    def btn_save_as_pressed(self):
         save_file = QFileDialog.getSaveFileName(None, 'Save As', 'C:\\', '3ds Max (*.max)')
-        if save_file[0] != '':
-            save_file = save_file[0].replace('.max', '')
-            save_tags = ['v1', 'v01', 'v001', 'v0001']
-            for save_tag in save_tags:
-                if save_tag in save_file.split('_')[-1]:
-                    save_file = save_file.split('_')[:-1]
-                    save_file = '_'.join(save_file)
-
-            save_file = save_file + '_v001'
-            rt.saveMaxFile(save_file)
-
-    def save_incremental(self):
-        if rt.maxFileName != '':
-            file_path = rt.maxFilePath
-            file_name = rt.maxFileName
-            file_name = file_name.replace('.max', '')
-            file_split = file_name.split('_')
-            for part in file_split:
-                if part.startswith('v') and part[1:4].isdigit():
-                    old_version = part[1:]
-                    break
-            new_version = int(old_version) + 1
-            new_version = 'v{:03}'.format(new_version)
-            new_file_name = file_name.replace('v' + old_version, new_version)
-            rt.saveMaxFile(file_path + new_file_name)
-        else:
-            QMessageBox.warning(None, 'Warning', 'Save/Open a scene first!')
-            return None
+        save_file = str(save_file[0].replace('.max', ''))
+        dmf.save_as(save_file)
+        self.wg_util.btn_save_as.setEnabled(False)
 
     def setup_tt(self):
         object_path = self.wg_util.line_import.displayText()
-
-        ttSetup = ct.TT_Setup()
-        import_object = ttSetup.import_object(object_path)
+        dmf.setup_initial_settings()
 
         self.wg_util.line_import.clear()
         self.wg_util.gBox_import.setEnabled(False)
+        self.wg_util.tab_asset.setEnabled(True)
         self.wg_util.tab_layer.setEnabled(True)
+        self.wg_util.tab_camera.setEnabled(True)
+        self.wg_util.tab_render.setEnabled(True)
+        self.wg_util.gBox_asset.setEnabled(True)
         self.wg_util.gBox_newLayer.setEnabled(True)
-        
-        self.refresh_render_settings()
-        return ttSetup
+        self.wg_util.btn_render_settings.setEnabled(True)
+
+# ASSET TAB --------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    def set_asset_path(self):
+        object_path = QFileDialog.getOpenFileName(None, 'Import Object', 'C:\\', 
+                      'All Formats (*.obj *.fbx *.abc *.max *mdl)')
+        self.wg_util.line_asset.setText(object_path[0])
+
+    def enable_add_asset(self):
+        if self.wg_util.line_asset.displayText():
+            self.wg_util.btn_asset_import.setEnabled(True)
+        else:
+            self.wg_util.btn_asset_import.setEnabled(False)
+
+    def check_duplicate_asset(self, file_name):
+        asset_ui = ca.AssetUI(parent=self)
+        i = 1
+        for asset in asset_ui.get_asset_list():
+            asset_name = asset.name.replace('_ctrl', '')
+            if '_copy_' in file_name:
+                copy = '_copy_' + str(i-1)
+                file_name = file_name.replace(copy, '_copy_' + str(i))
+                i = i + 1
+
+            elif file_name == asset_name and '_copy_' not in file_name:
+                file_name = file_name + '_copy_' + str(i)
+                i = i + 1
+
+        return file_name
+
+    def import_asset(self, object_path):
+        file_formats = ['.obj', '.fbx', '.abc', '.max', '.mdl']
+        file_name = object_path.split('/')[-1:]
+        file_name = ''.join(file_name)
+        for file_format in file_formats:
+            if file_format in file_name:
+                file_name = file_name.replace(file_format, '')
+
+        file_name = self.check_duplicate_asset(file_name)
+        ttSetup = ct.TT_Setup()
+        import_object = ttSetup.import_object(object_path, file_name)
+        for asset in import_object.Children:
+            rs.Render_Settings().include_asset_to_wireframe(asset)
+
+        asset_ui = ca.AssetUI(parent=self)
+        asset_ui.create_asset(file_name, len(asset_ui.get_asset_list()))
+        asset_ui.enable_asset(file_name)
+        self.wg_util.line_asset.clear()
+
+# HDRIS TAB --------------------------------------------------------------------------------------------------------------------------------------------------------
 
     def enable_add_layer(self):
         if self.wg_util.new_name_layer.displayText():
@@ -179,71 +205,125 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
         if lyr_ui.check_lyr_name(lyr_name) != False:
             lyr_ui.create_layer(lyr_name, len(lyr_ui.get_lyr_list()) + 1)
             ct.TT_Setup().add_domeLight(lyr_name)
-            lyr_ui.isolateLayer(lyr_name)
+            lyr_ui.isolate_layer(lyr_name)
+
+# CAMERA TAB --------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    def enable_add_camera(self):
+        if self.wg_util.line_camera.displayText():
+            self.wg_util.pBtn_createCamera.setEnabled(True)
+        else:
+            self.wg_util.pBtn_createCamera.setEnabled(False)
+
+    def add_camera(self):
+        cam_name = self.wg_util.line_camera.displayText()
+        cam_ui = cc.CameraUI(parent=self)
+
+        if cam_ui.check_cam_name(cam_name) != False:
+            cam_ui.create_camera(cam_name, len(cam_ui.get_cam_list()) + 1)
+            ct.TT_Setup().create_camera(cam_name)
+            cam_ui.isolate_camera(cam_name)
+
+# RENDER TAB --------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    def get_output_path(self):
+        vr = rs.Render_Settings().get_vray()
+        output_path = str(vr.output_rawFileName)
+        if output_path == 'None':
+            self.wg_util.btn_renderout.setEnabled(False)
+            return ''
+        else:
+            return output_path
+
+    def set_render_path(self):
+        dialog = QFileDialog(self)
+        dialog.setFileMode(QFileDialog.AnyFile)
+        render_path = dialog.getSaveFileName(None, 'Import Object', 'C:\\', 
+                      'EXR File (*.exr)')
+
+        self.wg_util.lEdit_render.setText(render_path[0])
+        dmf.set_vray_render_output(render_path[0])
+
+    def enable_render(self):
+        if self.wg_util.lEdit_render.displayText():
+            self.wg_util.btn_renderout.setEnabled(True)
+        else:
+            self.wg_util.btn_renderout.setEnabled(False)
+
+    def toggle_render_settings(self):
+        if self.wg_util.btn_render_settings.isChecked():
+            self.wg_util.btn_render_settings.setText('▾  Render Settings')
+            rs.Render_Settings().show_render_settings(self)
+        else:
+            self.wg_util.btn_render_settings.setText('▸  Render Settings')
+            rs.Render_Settings().hide_render_settings(self)
+
+    def toggle_aovs(self):
+        if self.wg_util.btn_aovs.isChecked():
+            self.wg_util.btn_aovs.setText('▾  AOVs')
+            rs.Render_Settings().show_aovs(self)
+        else:
+            self.wg_util.btn_aovs.setText('▸  AOVs')
+            rs.Render_Settings().hide_aovs(self)
+
+# CHECK SCENE --------------------------------------------------------------------------------------------------------------------------------------------------------
 
     def check_scene(self):
         if rt.getNodeByName('TT_HDRIs_ctrl') != None:
-            self.refresh_render_settings()
             self.domeLights = ct.TT_Setup().get_domeLights()
+            self.cameras = ct.TT_Setup().get_cameras()
+            self.assets = ct.TT_Setup().get_assets()
+
+            self.wg_util.tab_asset.setEnabled(True)
             self.wg_util.tab_layer.setEnabled(True)
+            self.wg_util.tab_camera.setEnabled(True)
+            self.wg_util.tab_render.setEnabled(True)
             self.wg_util.gBox_newLayer.setEnabled(True)
-            if self.domeLights:
-                lyr_ui = cl.LayerUI(parent=self)
-                index = 1
-                for domeLight in self.domeLights:
-                    lyr_ui.create_layer(domeLight.name, index)
-                    lyr_ui.getHDRI(domeLight)
-                    index = index + 1
-                    if domeLight.on:
-                        lyr_ui.toggleLayer(domeLight.name)
+            self.wg_util.gBox_asset.setEnabled(True)
+            self.wg_util.btn_render_settings.setEnabled(True)
 
-    def render_setting_preset(self):
-        rs_preset = str(self.wg_util.cBox_renderSettings.currentText())
-        ct.TT_Setup().inital_render_settings(rs_preset)
-        self.refresh_render_settings()
+            self.check_assets()
+            self.check_hdris()
+            self.check_cameras()
 
-    def refresh_render_settings(self):
-        vr = ct.TT_Setup().get_vray()
-        rt.rendTimeType = 3
+    def check_assets(self):
+        if self.assets:
+            asset_ui = ca.AssetUI(parent=self)
+            index = 1
+            for asset in self.assets:
+                asset_name = asset.name.replace('_ctrl', '')
+                asset_ui.create_asset(asset_name, index)
+                asset_ui.get_asset_subdivision(asset_name)
+                if asset.isHidden == False:
+                   asset_ui.enable_asset(asset_name)
+                if str(rt.getTransformLockFlags(asset)) != r'#{}':
+                    asset_ui.lock_asset(asset)
+                index = index + 1
 
-        self.wg_util.sBox_width.setValue(rt.renderWidth)
-        self.wg_util.sBox_height.setValue(rt.renderHeight)
+    def check_hdris(self):
+        if self.domeLights:
+            lyr_ui = cl.LayerUI(parent=self)
+            index = 1
+            for domeLight in self.domeLights:
+                lyr_ui.create_layer(domeLight.name, index)
+                lyr_ui.getHDRI(domeLight)
+                lyr_ui.enable_options(domeLight.name)
+                index = index + 1
+                if domeLight.on:
+                    lyr_ui.toggle_layer(domeLight.name)
 
-        self.wg_util.sBox_startFrame.setValue(rt.rendStart)
-        self.wg_util.sBox_endFrame.setValue(rt.rendEnd)
-        self.wg_util.sBox_nth.setValue(rt.rendNThFrame)
-
-        self.wg_util.sBox_minSubdiv.setValue(vr.twoLevel_baseSubdivs)
-        self.wg_util.sBox_maxSubdiv.setValue(vr.twoLevel_fineSubdivs)
-        self.wg_util.dsBox_noise.setValue(vr.twoLevel_threshold)
-        self.wg_util.sBox_shading.setValue(vr.imageSampler_shadingRate)
-        self.wg_util.sBox_bucket.setValue(vr.twoLevel_bucket_width)
-        self.wg_util.cBox_lights.setChecked(vr.options_lights)
-        self.wg_util.cBox_gi.setChecked(vr.gi_on)
-        self.wg_util.cBox_shadows.setChecked(vr.options_shadows)
-        self.wg_util.cBox_displacement.setChecked(vr.options_displacement)
-        self.wg_util.cBox_colorspace.setCurrentIndex(self.set_colorspace())
-
-    def clicked_resolution_720(self):
-        self.wg_util.sBox_width.setValue(1280)
-        self.wg_util.sBox_height.setValue(720)
-
-    def clicked_resolution_1080(self):
-        self.wg_util.sBox_width.setValue(1920)
-        self.wg_util.sBox_height.setValue(1080)
-
-    def clicked_resolution_1440(self):
-        self.wg_util.sBox_width.setValue(2560)
-        self.wg_util.sBox_height.setValue(1440)
-
-    def clicked_resolution_2160(self):
-        self.wg_util.sBox_width.setValue(3840)
-        self.wg_util.sBox_height.setValue(2160)
-
-    def set_colorspace(self):
-        vr = ct.TT_Setup().get_vray()
-        index = vr.options_rgbColorSpace - 1
-        return index
+    def check_cameras(self):
+        if self.cameras:
+            cam_ui = cc.CameraUI(parent=self)
+            index = 1
+            for camera in self.cameras:
+                cam_ui.create_camera(camera.name, index)
+                index = index + 1
+                if camera.isHidden == False:
+                    cam_ui.toggle_camera(camera.name)
+                if dmf.get_camera_transform_flags(camera) != r'#{}':
+                    cam_ui.lock_camera(camera)
+                cam_ui.get_cam_focal_length(camera)
 
 def main():
     main_window = qtmax.GetQMaxMainWindow()

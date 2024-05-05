@@ -1,0 +1,12 @@
+<RCC>
+  <qresource prefix="asset">
+    <file>icons/asset.png</file>
+    <file>icons/asset_clicked.png</file>
+    <file>icons/cameras_lock.png</file>
+    <file>icons/cameras_locked.png</file>
+    <file>icons/rename.png</file>
+    <file>icons/rename_clicked.png</file>
+    <file>icons/trash.png</file>
+    <file>icons/trash_clicked.png</file>
+  </qresource>
+</RCC>

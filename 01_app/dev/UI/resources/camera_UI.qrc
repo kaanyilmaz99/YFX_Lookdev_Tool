@@ -1,0 +1,14 @@
+<RCC>
+  <qresource prefix="camera">
+    <file>icons/charts.png</file>
+    <file>icons/charts_visible.png</file>
+    <file>icons/rename.png</file>
+    <file>icons/rename_clicked.png</file>
+    <file>icons/cameras_locked.png</file>
+    <file>icons/trash.png</file>
+    <file>icons/trash_clicked.png</file>
+    <file>icons/cameras_lock.png</file>
+    <file>icons/cameras.png</file>
+    <file>icons/cameras_clicked.png</file>
+  </qresource>
+</RCC>
