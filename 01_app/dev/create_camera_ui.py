@@ -1,4 +1,15 @@
-# Dynamically builds the "Cameras" into the main_ui 
+#****************************************************************************************************
+# content:        Creates the CameraUI after importing and will be appended to the main ui dynamically.
+#                 Also connects all the necessary buttons to its functions.
+
+# dependencies:   PySide2/PyQt, 3dsmax API, main window (qtmax) and maxscript
+
+# how to:         In the Camera tab type in a name and press create
+
+# todos:          Maybe add more camera options
+
+# author:         Kaan Yilmaz | kaan.yilmaz99@t-online.de
+#****************************************************************************************************
 
 import os
 import sys
@@ -11,10 +22,10 @@ from PySide2.QtWidgets import *
 from PySide2 import QtWidgets, QtGui, QtUiTools, QtCore
 from PySide2.QtCore import Slot, Signal, QProcess, QObject
 
-import create_main_ui as main_ui
-import create_turntable as ct
-import create_layer_ui as cl
 import create_asset_ui as ca
+import create_layer_ui as cl
+import create_turntable as ct
+import create_main_ui as main_ui
 
 from UI import icons
 from UI import tt_icons
@@ -35,6 +46,8 @@ class CameraUI():
     def __init__(self, parent=None):
         self.wg_util = parent
         self.cam_number = str(len(self.get_cam_list()))
+
+# CAMERA UI ------------------------------------------------------------------------------------------------------------------------------------------------
 
     def check_cam_name(self, new_cam_name):
         # Check if CameraName already exists
@@ -145,6 +158,8 @@ class CameraUI():
             camera_item = camera_layer.itemAt(i).widget()
             if cam_name in camera_item.objectName():
                 return(i)
+
+# CAMERA OPTIONS UI ------------------------------------------------------------------------------------------------------------------------------------------
 
     def camera_options_ui(self, cam_name):
         self.wg_cam_options = QtUiTools.QUiLoader().load(LAYER_OPTIONS_UI_PATH)

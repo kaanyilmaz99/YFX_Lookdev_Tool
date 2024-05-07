@@ -1,4 +1,15 @@
-# Dynamically builds the "Asset" into the main_ui 
+#****************************************************************************************************
+# content:        Creates the AssetUI after importing and will be appended to the main ui dynamically.
+#                 Also connects all the necessary buttons to its functions.
+
+# dependencies:   PySide2/PyQt, 3dsmax API, main window (qtmax) and maxscript
+
+# how to:         After importing an asset from the MainUI this module will be executed.
+
+# todos:          Add more custom settings in the options tab (e.g.: Displacement V-Rax modifier settings)
+
+# author:         Kaan Yilmaz | kaan.yilmaz99@t-online.de
+#****************************************************************************************************
 
 import os
 import sys
@@ -11,10 +22,8 @@ from PySide2.QtWidgets import *
 from PySide2 import QtWidgets, QtGui, QtUiTools, QtCore
 from PySide2.QtCore import Slot, Signal, QProcess, QObject
 
-import create_main_ui as main_ui
 import create_turntable as ct
-import create_camera_ui as cc
-import create_layer_ui as cl
+import create_main_ui as main_ui
 
 from UI import icons
 from UI import tt_icons
@@ -24,8 +33,6 @@ from UI import camera_icons
 sys.path.append(os.path.dirname(__file__))
 importlib.reload(main_ui)
 importlib.reload(ct)
-importlib.reload(cc)
-importlib.reload(cl)
 
 DIR_PATH = os.path.dirname(__file__)
 ASSET_UI_PATH = DIR_PATH + r'\UI\asset_UI.ui'
@@ -36,12 +43,17 @@ class AssetUI():
         self.wg_util = parent
         self.asset_number = str(len(self.get_asset_list()))
 
+# ASSET UI ------------------------------------------------------------------------------------------------------------------------------------------------
+
+    def enable_asset(self, asset_name):
+        btn_asset = self.wg_util.findChild(QPushButton, 'btn_asset_' + asset_name)
+        btn_asset.setChecked(True)
+
     def get_asset_list(self):
         assets = ct.TT_Setup().get_assets()
         return assets
 
     def check_asset_name(self, new_asset_name):
-        # Check if LayerName already exists
         new_asset_ctrl_name = new_asset_name + '_ctrl'
         for asset in self.get_asset_list():
             if asset.name == new_asset_ctrl_name:
@@ -53,9 +65,9 @@ class AssetUI():
 
         self.wg_asset = QtUiTools.QUiLoader().load(ASSET_UI_PATH)
         self.wg_asset.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.wg_asset.setObjectName('wg_asset_' + asset_name)
 
         self.wg_asset.gBox_asset.setTitle(asset_name)
-        self.wg_asset.setObjectName('wg_asset_' + asset_name)
         self.wg_asset.gBox_asset.setObjectName('gBox_asset_' + asset_name)
         self.wg_asset.btn_asset.setObjectName('btn_asset_' + asset_name)
         self.wg_asset.btn_asset_lock.setObjectName('btn_asset_lock_' + asset_name)
@@ -75,12 +87,6 @@ class AssetUI():
         btn_asset_lock = self.wg_util.findChild(QPushButton, 'btn_asset_lock_' + asset_name)
         btn_asset_lock.clicked.connect(lambda: self.toggle_asset_lock(asset_name))
 
-    def sBox_subdiv_change(self, asset_name):
-        sBox_subdiv = self.wg_util.findChild(QSpinBox, 'sBox_subdiv_' + asset_name)
-        value = sBox_subdiv.value()
-        ct.TT_Setup().change_subdiv(asset_name, value)
-        rt.redrawViews()
-
     def get_asset_subdivision(self, asset_name):
         sBox_subdiv = self.wg_util.findChild(QSpinBox, 'sBox_subdiv_' + asset_name)
         asset_ctrl = rt.getNodeByName(asset_name + '_ctrl')
@@ -89,15 +95,18 @@ class AssetUI():
             sBox_subdiv.setValue(value)
             return value
 
+    def sBox_subdiv_change(self, asset_name):
+        sBox_subdiv = self.wg_util.findChild(QSpinBox, 'sBox_subdiv_' + asset_name)
+        value = sBox_subdiv.value()
+        ct.TT_Setup().change_subdiv(asset_name, value)
+        rt.redrawViews()
+
     def remove_asset(self, asset_name):
         ct.TT_Setup().delete_asset(asset_name)
         layout_asset = self.wg_util.findChild(QVBoxLayout, 'layout_asset')
-
-        # Remove Layer UI
         wg_asset = self.wg_util.findChild(QWidget, 'wg_asset_' + asset_name)
         wg_asset.deleteLater()
 
-        # Reposition Groupboxes
         index = 1
         for asset in self.get_asset_list():
             asset_name = asset.name.replace('_ctrl', '')
@@ -107,10 +116,6 @@ class AssetUI():
             
         rt.redrawViews()
 
-    def enable_asset(self, asset_name):    # Specially for the case when checking the scene
-        btn_asset = self.wg_util.findChild(QPushButton, 'btn_asset_' + asset_name)
-        btn_asset.setChecked(True)
-
     def toggle_asset(self, asset_name):
         asset_ctrl = rt.getNodeByName(asset_name + '_ctrl')
         rt.select(asset_ctrl)
@@ -118,6 +123,7 @@ class AssetUI():
             if asset_ctrl.isHidden:
                 asset.isHidden = False
                 asset_ctrl.isHidden = False
+                rt.execute("max move")
             else:
                 asset.isHidden = True
                 asset_ctrl.isHidden = True
@@ -148,6 +154,8 @@ class AssetUI():
             if asset_name in asset_item.objectName():
                 return(i)
 
+# ASSET OPTIONS UI ----------------------------------------------------------------------------------------------------------------------------------------
+
     def asset_options_ui(self, asset_name):
         self.wg_asset_options = QtUiTools.QUiLoader().load(ASSET_OPTIONS_UI_PATH)
         self.wg_asset_options.setWindowFlag(QtCore.Qt.WindowContextHelpButtonHint, False)
@@ -173,19 +181,12 @@ class AssetUI():
 
         return total_polycount
 
-    # def create_disp_modifier(self, asset_name):
-    # def get_disp_modifier(self, asset_name):
-
     def asset_options_ui_confirm(self, asset_name, asset_index):
         new_asset_name = self.wg_asset_options.line_asset_rename.displayText()
         asset_ctrl = rt.getNodeByName(asset_name + '_ctrl')
 
         for asset in self.get_asset_list():
             if asset.name == asset_ctrl.name:
-                # domeLight.invisible = self.wg_options.cBox_invisible.isChecked()
-                # domeLight.multiplier = self.wg_options.sBox_multiplier.value()
-                # ct.TT_Setup().dome_rotation(domeLight, self.wg_options.sBox_rotation.value())
-
                 if asset_name != new_asset_name and self.check_asset_name(new_asset_name) != False:
                     for asset in asset_ctrl.Children:
                         asset.name = asset.name.replace(asset_name, new_asset_name)

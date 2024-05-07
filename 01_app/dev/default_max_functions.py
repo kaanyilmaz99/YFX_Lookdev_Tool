@@ -1,17 +1,9 @@
 #****************************************************************************************************
-# content:        Creates the MainUI for the YFX Lookdev Tool. Interacting with it
-#                 executes other modules and dynamically adds new UI elements.
+# content:        A collection of usefull functions, where the 3dsmax API is needed
 
-# dependencies:   PySide2/PyQt, 3dsMax and maxscript
+# dependencies:   3dsMax and maxscript
 
-# how to:         This module can be executed in 3dsMax with the 'Run Script' option directly. 
-#                 By default it runs after clicking the 'YFK Turntable' button in the main menu.
-
-# todos:          Add a 'Texture' tab to the MainUI, which will give you the option to
-#                 import any texture and connect them to the material automatically.
-
-# version:        v0.9
-# date:           2024-11-02
+# how to:         These functions will be executed from the other modules if needed
 
 # author:         Kaan Yilmaz | kaan.yilmaz99@t-online.de
 #****************************************************************************************************
@@ -21,34 +13,20 @@ import sys
 sys.path.append(os.path.dirname(__file__))                       # Can be deleted later
 import importlib
 
-
-import qtmax
 from pymxs import runtime as rt
 
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
-from PySide2 import QtWidgets, QtGui, QtUiTools, QtCore
-from PySide2.QtCore import Slot, Signal, QProcess, QObject
-
-
-import render_setup as rs
-import create_asset_ui as ca
-import create_layer_ui as cl
+import create_animations as anim
 import create_turntable as ct
-import create_camera_ui as cc
+import render_setup as rs
 
-from UI import icons
-from UI import tt_icons
-from UI import camera_icons
-
-importlib.reload(cl)                                             # Can be deleted later
-importlib.reload(ct)                                             # Can be deleted later
-importlib.reload(cc)                                             # Can be deleted later
-importlib.reload(ca)                                             # Can be deleted later
-importlib.reload(rs)                                             # Can be deleted later
+importlib.reload(anim)
+importlib.reload(rs)
+importlib.reload(ct)                                                # Can be deleted later
 
 DIR_PATH = os.path.dirname(__file__)
-MAIN_UI_PATH = DIR_PATH + r'\UI\turntable_UI.ui'
+
+def get_tt_setup():
+    return rt.getNodeByName('TT_Master_ctrl')
 
 def open_max_file(file_path):
     rt.checkForSave()
@@ -80,27 +58,71 @@ def save_incremental():
         QMessageBox.warning(None, 'Warning', 'Save/Open a scene first!')
         return None
 
-def get_tt_setup():
-    return rt.getNodeByName('TT_Master_ctrl')
+def get_all_children_of_node(parent, node_type=None):
+    def list_children(node):
+        children = []
+        for child in node.Children:
+            children.append(child)
+            children = children + list_children(child)
+        return children
+    child_list = list_children(parent)
 
-def setup_initial_settings():
-    vr = rs.Render_Settings().get_vray()
-    vr.output_saveRawFile = True
+    return ([x for x in child_list if rt.superClassOf(x) == node_type]
+            if node_type else child_list)
 
-    rs_high_path = DIR_PATH + r'\render_presets\RS_High.rps'
-    rt.renderpresets.Load(0, rs_high_path, rt.BitArray(2, 4, 32))
+def get_camera_transform_flags(node):
+    return str(rt.getTransformLockFlags(node))
 
-    rt.rendTimeType = 3
-    rt.sliderTime = rt.rendStart
+def get_inital_domeLight_rotation():
+    initial_rotation = 0
+    for domeLight in ct.TT_Setup().get_domeLights():
+        if domeLight.texmap != None:
+            initial_rotation = anim.get_dome_rotation(domeLight)
+    return initial_rotation
 
+def update_framerange(initial_rotation, v_rot):
+    asset_ctrl = rt.getNodeByName('TT_Assets_ctrl')
+    anim.asset_hrotation(asset_ctrl, v_rot)
+    for domeLight in ct.TT_Setup().get_domeLights():
+        if domeLight.texmap:
+            anim.dome_rotation(domeLight, initial_rotation)
+
+    rt.animationRange = rt.interval(rt.rendStart, rt.rendEnd)
+    rt.renderSceneDialog.update()
+
+def include_asset_to_wireframe(asset):
     re = rt.MaxOps.GetCurRenderElementMgr()
-    re.AddRenderElement(rt.VRayExtraTex(elementname='Wireframe'))
+    re_amount = re.NumRenderElements()
+    asset_ctrl = rt.getNodeByName('TT_Assets_ctrl')
 
-def get_camera_transform_flags(camera):
-    return str(rt.getTransformLockFlags(camera))
+    for re_index in range(0, re_amount):
+        aov = re.GetRenderElement(re_index)
+        if aov.elementname == 'Wireframe':
+            if aov.includeList == None:
+                aov.includeList = rt.array(asset)
+                aov.texture = create_vray_edges()
+                aov.elementname = 'Wireframe'
+            else:
+                new_array = rt.array()
+                for mesh in list(aov.includeList):
+                    rt.append(new_array, mesh)
+                rt.append(new_array, asset)
+                aov.includeList = new_array
+
+def create_vray_edges():
+    wireframe = rt.VRayEdgesTex()
+    wireframe.PixelWidth = 0.5
+    return wireframe
+
+def get_vray():
+    for renderer in rt.rendererClass.classes:
+        if "V_Ray" in str(renderer) and not "GPU" in str(renderer):
+            rt.renderers.current = renderer
+            vr = rt.renderers.current
+    return vr
 
 def set_vray_render_output(render_path):
-    vr = rs.Render_Settings().get_vray()
+    vr = get_vray()
     vr.output_rawFileName = render_path
     vr.output_force32bit_3dsmax_vfb = True
 

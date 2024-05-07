@@ -2,10 +2,10 @@
 # content:        Creates the MainUI for the YFX Lookdev Tool. Interacting with it
 #                 executes other modules and dynamically adds new UI elements.
 
-# dependencies:   PySide2/PyQt, 3dsMax and maxscript
+# dependencies:   PySide2/PyQt, 3dsmax main window (qtmax)
 
 # how to:         This module can be executed in 3dsMax with the 'Run Script' option directly. 
-#                 By default it runs after clicking the 'YFK Turntable' button in the main menu.
+#                 By default it runs after clicking the 'YFX Turntable' button in the main menu.
 
 # todos:          Add a 'Texture' tab to the MainUI, which will give you the option to
 #                 import any texture and connect them to the material automatically.
@@ -18,24 +18,20 @@
 
 import os
 import sys
+import qtmax
 sys.path.append(os.path.dirname(__file__))                       # Can be deleted later
 import importlib
-
-
-import qtmax
-from pymxs import runtime as rt
 
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from PySide2 import QtWidgets, QtGui, QtUiTools, QtCore
 from PySide2.QtCore import Slot, Signal, QProcess, QObject
 
-
 import render_setup as rs
 import create_asset_ui as ca
 import create_layer_ui as cl
-import create_turntable as ct
 import create_camera_ui as cc
+import create_turntable as ct
 import default_max_functions as dmf
 
 from UI import icons
@@ -51,7 +47,6 @@ importlib.reload(rs)                                             # Can be delete
 
 DIR_PATH = os.path.dirname(__file__)
 MAIN_UI_PATH = DIR_PATH + r'\UI\turntable_UI.ui'
-
 
 class YFX_LDEV_UI(QtWidgets.QDockWidget):
     def __init__(self, parent=None):
@@ -104,7 +99,6 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
         self.wg_util.btn_render_path.clicked.connect(self.set_render_path)
         self.wg_util.lEdit_render.textChanged.connect(self.enable_render)
         self.wg_util.btn_renderout.clicked.connect(dmf.start_render)
-
 # HOME TAB ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
     def set_import_path(self):
@@ -131,8 +125,9 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
 
     def setup_tt(self):
         object_path = self.wg_util.line_import.displayText()
-        dmf.setup_initial_settings()
+        rs.Render_Settings().setup_initial_settings()
 
+        self.import_asset(object_path)
         self.wg_util.line_import.clear()
         self.wg_util.gBox_import.setEnabled(False)
         self.wg_util.tab_asset.setEnabled(True)
@@ -184,7 +179,7 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
         ttSetup = ct.TT_Setup()
         import_object = ttSetup.import_object(object_path, file_name)
         for asset in import_object.Children:
-            rs.Render_Settings().include_asset_to_wireframe(asset)
+            dmf.include_asset_to_wireframe(asset)
 
         asset_ui = ca.AssetUI(parent=self)
         asset_ui.create_asset(file_name, len(asset_ui.get_asset_list()))
@@ -227,7 +222,7 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
 # RENDER TAB --------------------------------------------------------------------------------------------------------------------------------------------------------
 
     def get_output_path(self):
-        vr = rs.Render_Settings().get_vray()
+        vr = dmf.get_vray()
         output_path = str(vr.output_rawFileName)
         if output_path == 'None':
             self.wg_util.btn_renderout.setEnabled(False)
@@ -266,14 +261,10 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
             self.wg_util.btn_aovs.setText('▸  AOVs')
             rs.Render_Settings().hide_aovs(self)
 
-# CHECK SCENE --------------------------------------------------------------------------------------------------------------------------------------------------------
+# CHECK SCENE - Check the .max scene file if it was created with this tool ---------------------------------------------------------------------------------------------------
 
     def check_scene(self):
-        if rt.getNodeByName('TT_HDRIs_ctrl') != None:
-            self.domeLights = ct.TT_Setup().get_domeLights()
-            self.cameras = ct.TT_Setup().get_cameras()
-            self.assets = ct.TT_Setup().get_assets()
-
+        if dmf.get_tt_setup():
             self.wg_util.tab_asset.setEnabled(True)
             self.wg_util.tab_layer.setEnabled(True)
             self.wg_util.tab_camera.setEnabled(True)
@@ -282,6 +273,9 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
             self.wg_util.gBox_asset.setEnabled(True)
             self.wg_util.btn_render_settings.setEnabled(True)
 
+            self.assets = ct.TT_Setup().get_assets()
+            self.domeLights = ct.TT_Setup().get_domeLights()
+            self.cameras = ct.TT_Setup().get_cameras()
             self.check_assets()
             self.check_hdris()
             self.check_cameras()
@@ -296,7 +290,7 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
                 asset_ui.get_asset_subdivision(asset_name)
                 if asset.isHidden == False:
                    asset_ui.enable_asset(asset_name)
-                if str(rt.getTransformLockFlags(asset)) != r'#{}':
+                if dmf.get_camera_transform_flags(asset) != r'#{}':
                     asset_ui.lock_asset(asset)
                 index = index + 1
 
@@ -324,6 +318,8 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
                 if dmf.get_camera_transform_flags(camera) != r'#{}':
                     cam_ui.lock_camera(camera)
                 cam_ui.get_cam_focal_length(camera)
+
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def main():
     main_window = qtmax.GetQMaxMainWindow()

@@ -1,4 +1,15 @@
-# Dynamically builds the "Layers" into the main_ui 
+#****************************************************************************************************
+# content:        Creates the HDRI UI after importing and will be appended to the main ui dynamically.
+#                 Also connects all the necessary buttons to its functions.
+
+# dependencies:   PySide2/PyQt, 3dsmax API, main window (qtmax) and maxscript
+
+# how to:         In the HDRI tab type in a name and press create
+
+# todos:          Add a color which can be multiplied on top of the hdri texture
+
+# author:         Kaan Yilmaz | kaan.yilmaz99@t-online.de
+#****************************************************************************************************
 
 import os
 import sys
@@ -11,10 +22,11 @@ from PySide2.QtWidgets import *
 from PySide2 import QtWidgets, QtGui, QtUiTools, QtCore
 from PySide2.QtCore import Slot, Signal, QProcess, QObject
 
-import create_main_ui as main_ui
+import create_asset_ui as ca
 import create_turntable as ct
 import create_camera_ui as cc
-import create_asset_ui as ca
+import create_main_ui as main_ui
+import create_animations as anim
 
 from UI import icons
 from UI import tt_icons
@@ -31,31 +43,30 @@ DIR_PATH = os.path.dirname(__file__)
 LAYER_UI_PATH = DIR_PATH + r'\UI\layer_UI.ui'
 LAYER_OPTIONS_UI_PATH = DIR_PATH + r'\UI\layer_options_UI.ui'
 
-
 class LayerUI():
     def __init__(self, parent=None):
         self.wg_util = parent
         self.lyr_number = str(len(self.get_lyr_list()))
 
-    def check_lyr_name(self, new_lyr_name):
-        # Check if LayerName already exists
-        for lyr in self.get_lyr_list():
-            if lyr.name == new_lyr_name:
-                QMessageBox.warning(None, 'Warning', 'Layer name already exists!')
-                return False
+# LAYER UI ------------------------------------------------------------------------------------------------------------------------------------------------
 
     def get_lyr_list(self):
         lyr_list = ct.TT_Setup().get_domeLights()
         return lyr_list
+
+    def check_lyr_name(self, new_lyr_name):
+        for lyr in self.get_lyr_list():
+            if lyr.name == new_lyr_name:
+                QMessageBox.warning(None, 'Warning', 'Layer name already exists!')
+                return False
 
     def create_layer(self, lyr_name, lyr_number):
         layout_layer = self.wg_util.findChild(QVBoxLayout, 'layout_layer')
 
         self.wg_layer = QtUiTools.QUiLoader().load(LAYER_UI_PATH)
         self.wg_layer.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-
-        self.wg_layer.lyr_gBox.setTitle(lyr_name)
         self.wg_layer.setObjectName('wg_layer_' + lyr_name)
+        self.wg_layer.lyr_gBox.setTitle(lyr_name)
         self.wg_layer.lyr_gBox.setObjectName('lyr_gBox_' + lyr_name)
         self.wg_layer.btn_path.setObjectName('btn_path_' + lyr_name)
         self.wg_layer.line_hdri.setObjectName('line_hdri_' + lyr_name)
@@ -74,11 +85,8 @@ class LayerUI():
         btn_options.clicked.connect(lambda: self.layer_options_ui(lyr_name))
 
     def remove_layer(self, lyr_name):
-        # Remove HDRI
         ct.TT_Setup().remove_domeLight(lyr_name)
         layout_layer = self.wg_util.findChild(QVBoxLayout, 'layout_layer')
-
-        # Remove Layer UI
         wg_layer = self.wg_util.findChild(QWidget, 'wg_layer_' + lyr_name)
         wg_layer.deleteLater()
 
@@ -117,7 +125,7 @@ class LayerUI():
                                 rt.environmentMap = node
                                 rt.viewport.DispBkgImage = False
                                 rt.redrawViews()
-
+                                
                 btn_enable.setChecked(True)
 
             else:
@@ -148,6 +156,8 @@ class LayerUI():
             if lyr_name in layout_item.objectName():
                 return(i)
 
+# LAYER OPTIONS UI ------------------------------------------------------------------------------------------------------------------------------------------------
+
     def enable_options(self, lyr_name):
         line_hdri = self.wg_util.findChild(QLineEdit, 'line_hdri_' + lyr_name)
         if line_hdri.displayText != '':
@@ -171,7 +181,7 @@ class LayerUI():
                 self.wg_options.line_rename.setText(lyr_name)
                 self.wg_options.cBox_invisible.setChecked(domeLight.invisible)
                 self.wg_options.sBox_multiplier.setValue(domeLight.multiplier)
-                self.wg_options.sBox_rotation.setValue(ct.TT_Setup().get_dome_rotation(domeLight))
+                self.wg_options.sBox_rotation.setValue(anim.get_dome_rotation(domeLight))
 
                 self.wg_options.sBox_posX.setValue(bitmap.ground_position[0])
                 self.wg_options.sBox_posY.setValue(bitmap.ground_position[1])
@@ -221,7 +231,7 @@ class LayerUI():
                 domeLight.invisible = self.wg_options.cBox_invisible.isChecked()
                 domeLight.multiplier = self.wg_options.sBox_multiplier.value()
                 self.set_background_option(domeLight)
-                ct.TT_Setup().dome_rotation(domeLight, self.wg_options.sBox_rotation.value())
+                anim.dome_rotation(domeLight, self.wg_options.sBox_rotation.value())
 
                 if lyr_name != new_lyr_name and self.check_lyr_name(new_lyr_name) != False:
                     domeLight.name = new_lyr_name
