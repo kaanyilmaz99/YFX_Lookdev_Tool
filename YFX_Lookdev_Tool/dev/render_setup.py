@@ -33,8 +33,7 @@ DIR_PATH = os.path.dirname(__file__)
 RS_PATH = DIR_PATH + r'\render_presets/'
 RS_UI_PATH = DIR_PATH + r'\UI\renderSettings_UI.ui'
 AOV_UI_PATH = DIR_PATH + r'\UI\aov_UI.ui'
-CFG_PATH = os.path.abspath(os.path.join(DIR_PATH, '..', 'cfg'))
-JSON_PATH = CFG_PATH + r'\turntable_settings.json'
+JSON_PATH = DIR_PATH + r'\Turntable_Configuration.json'
 
 # READ .JSON CONFIG FILE  ------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -176,18 +175,26 @@ class Render_Settings():
         vr = dmf.get_vray()
         vr.output_saveRawFile = True
         rt.rendTimeType = 3
+        colorspace = vr.options_rgbColorSpace - 1
+        if colorspace:
+            colorspace = 'ACES'
+        else:
+            colorspace = 'sRGB'
 
         if rs_preset == 'High':
             rs_high_path = RS_PATH + "RS_High.rps"
             rt.renderpresets.Load(0, rs_high_path, rt.BitArray(2, 32))
+            self.change_colorspace(colorspace)
 
         elif rs_preset == 'Medium':
             rs_high_path = RS_PATH + "RS_Medium.rps"
             rt.renderpresets.Load(0, rs_high_path, rt.BitArray(2, 32))
+            self.change_colorspace(colorspace)
 
         elif rs_preset == 'Low':
             rs_high_path = RS_PATH + "RS_Low.rps"
             rt.renderpresets.Load(0, rs_high_path, rt.BitArray(2, 32))
+            self.change_colorspace(colorspace)
 
     def change_minSubdiv(self, value):
         self.wg_rs.cBox_renderSettings.setCurrentText('Custom')

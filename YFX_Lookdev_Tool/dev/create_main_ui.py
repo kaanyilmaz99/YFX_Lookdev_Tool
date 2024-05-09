@@ -10,8 +10,8 @@
 # todos:          Add a 'Texture' tab to the MainUI, which will give you the option to
 #                 import any texture and connect them to the material automatically.
 
-# version:        v0.9
-# date:           2024-11-02
+# version:        v 1.0.0
+# date:           2024-11-03
 
 # author:         Kaan Yilmaz | kaan.yilmaz99@t-online.de
 #****************************************************************************************************
@@ -32,18 +32,20 @@ import create_asset_ui as ca
 import create_layer_ui as cl
 import create_camera_ui as cc
 import create_turntable as ct
+import create_textures_ui as ctex
 import default_max_functions as dmf
 
-from UI import icons
-from UI import tt_icons
-from UI import camera_icons
+from UI.icons import icons
+from UI.icons import tt_icons
+from UI.icons import camera_icons
 
-importlib.reload(dmf)                                            # Can be deleted later 
 importlib.reload(cl)                                             # Can be deleted later
 importlib.reload(ct)                                             # Can be deleted later
 importlib.reload(cc)                                             # Can be deleted later
 importlib.reload(ca)                                             # Can be deleted later
 importlib.reload(rs)                                             # Can be deleted later
+importlib.reload(dmf)
+importlib.reload(ctex)                                           # Can be deleted later 
 
 DIR_PATH = os.path.dirname(__file__)
 MAIN_UI_PATH = DIR_PATH + r'\UI\turntable_UI.ui'
@@ -93,12 +95,18 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
         self.wg_util.line_camera.textEdited.connect(self.enable_add_camera)
         self.wg_util.pBtn_createCamera.clicked.connect(self.add_camera)
 
+        #Texture Tab
+        self.wg_util.btn_choose_texture.clicked.connect(self.set_texture_path)
+        self.wg_util.line_texture_path.textChanged.connect(self.enable_import_texture)
+        self.wg_util.btn_import_texture.clicked.connect(self.toggle_import_texture)
+
         #Render Tab
         self.wg_util.btn_render_settings.clicked.connect(self.toggle_render_settings)
         self.wg_util.btn_aovs.clicked.connect(self.toggle_aovs)
         self.wg_util.btn_render_path.clicked.connect(self.set_render_path)
         self.wg_util.lEdit_render.textChanged.connect(self.enable_render)
         self.wg_util.btn_renderout.clicked.connect(dmf.start_render)
+        
 # HOME TAB ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
     def set_import_path(self):
@@ -135,8 +143,10 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
         self.wg_util.tab_camera.setEnabled(True)
         self.wg_util.tab_render.setEnabled(True)
         self.wg_util.gBox_asset.setEnabled(True)
+        self.wg_util.tab_textures.setEnabled(True)
         self.wg_util.gBox_newLayer.setEnabled(True)
         self.wg_util.btn_render_settings.setEnabled(True)
+        self.wg_util.btn_save_as.setEnabled(True)
 
 # ASSET TAB --------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -219,6 +229,39 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
             ct.TT_Setup().create_camera(cam_name)
             cam_ui.isolate_camera(cam_name)
 
+# TEXTURE TAB -------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    def set_texture_path(self):
+        dialog = QFileDialog(self)
+        dialog.setFileMode(QFileDialog.DirectoryOnly)
+        texture_folder_path = dialog.getExistingDirectory(self, 'Choose Texture Folder')
+        self.wg_util.line_texture_path.setText(texture_folder_path)
+
+    def enable_import_texture(self):
+        if self.wg_util.line_texture_path.text():
+            self.wg_util.btn_import_texture.setEnabled(True)
+        else:
+            self.wg_util.btn_import_texture.setEnabled(False)
+
+        if self.wg_util.btn_import_texture.isChecked():
+            if self.wg_util.line_texture_path.text():
+                tex_ui = ctex.Textures(self.wg_util.line_texture_path.text())
+                tex_ui.hide_import_textures(self)
+                tex_ui.show_import_textures(self)
+            else:
+                self.wg_util.btn_import_texture.setChecked(False)
+                self.toggle_import_texture()
+
+    def toggle_import_texture(self):
+        if self.wg_util.btn_import_texture.isChecked():
+            self.wg_util.btn_import_texture.setText('▾  Import Textures')
+            tex_ui = ctex.Textures(self.wg_util.line_texture_path.text())
+            tex_ui.show_import_textures(self)
+        else:
+            self.wg_util.btn_import_texture.setText('▸  Import Textures')
+            tex_ui = ctex.Textures(self.wg_util.line_texture_path.text())
+            tex_ui.hide_import_textures(self)
+
 # RENDER TAB --------------------------------------------------------------------------------------------------------------------------------------------------------
 
     def get_output_path(self):
@@ -271,6 +314,7 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
             self.wg_util.tab_render.setEnabled(True)
             self.wg_util.gBox_newLayer.setEnabled(True)
             self.wg_util.gBox_asset.setEnabled(True)
+            self.wg_util.tab_textures.setEnabled(True)
             self.wg_util.btn_render_settings.setEnabled(True)
 
             self.assets = ct.TT_Setup().get_assets()
@@ -319,7 +363,7 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
                     cam_ui.lock_camera(camera)
                 cam_ui.get_cam_focal_length(camera)
 
-# -----------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def main():
     main_window = qtmax.GetQMaxMainWindow()

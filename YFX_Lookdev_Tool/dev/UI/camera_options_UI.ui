@@ -208,7 +208,7 @@ QGroupBox::title{
          </layout>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,0,1">
+         <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,1,0">
           <property name="bottomMargin">
            <number>0</number>
           </property>

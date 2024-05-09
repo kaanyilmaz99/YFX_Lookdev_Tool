@@ -27,10 +27,10 @@ import create_layer_ui as cl
 import create_turntable as ct
 import create_main_ui as main_ui
 
-from UI import icons
-from UI import tt_icons
-from UI import asset_icons
-from UI import camera_icons
+from UI.icons import icons
+from UI.icons import tt_icons
+from UI.icons import asset_icons
+from UI.icons import camera_icons
 
 sys.path.append(os.path.dirname(__file__))
 importlib.reload(main_ui)

@@ -109,6 +109,23 @@ def include_asset_to_wireframe(asset):
                 rt.append(new_array, asset)
                 aov.includeList = new_array
 
+def create_bitmap_texture(path):
+    bitmap = rt.VrayBitmap()
+    name = path.split('/')[-1]
+    bitmap.name = name.split('.')[0]
+    bitmap.HDRIMapName = path
+    bitmap.coords.blur = 0.01
+    return bitmap
+
+def create_vray_material():
+    material = rt.VrayMtl()
+    material.reflection = rt.color(255, 255, 255)
+    material.refraction_ior = 1.53
+    material.brdf_useRoughness = True
+    material.texmap_bump_multiplier = 100
+    material.texmap_coat_bump_multiplier = 100
+    return material
+
 def create_vray_edges():
     wireframe = rt.VRayEdgesTex()
     wireframe.PixelWidth = 0.5
