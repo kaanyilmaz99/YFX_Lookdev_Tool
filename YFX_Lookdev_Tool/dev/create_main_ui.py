@@ -365,7 +365,7 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-def main():
+def main_widget():
     main_window = qtmax.GetQMaxMainWindow()
     main_widget = main_window.findChild(QtWidgets.QDockWidget, 'YFX_LDEV_UI')
     if main_widget:
@@ -377,6 +377,3 @@ def main():
     main_widget.check_scene()
     main_widget.setFloating(True)
     main_widget.show()
-
-if __name__ == '__main__':
-    main()
