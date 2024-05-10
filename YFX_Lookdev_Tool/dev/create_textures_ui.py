@@ -80,10 +80,10 @@ class Textures():
             y_pos = y_pos + 100
 
     def create_base_material(self):
+        rt.sme.Open()
         node_view = self.get_node_view()
         material = dmf.create_vray_material()
         normal_node = rt.VRayNormalMap()
-        rt.sme.Open()
 
         if self.diffuse_map:
             material.texmap_diffuse = self.create_texture(self.diffuse_map)
