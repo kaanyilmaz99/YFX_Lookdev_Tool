@@ -15,8 +15,8 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>335</width>
-    <height>431</height>
+    <width>367</width>
+    <height>445</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -101,6 +101,11 @@ QGroupBox::title{
           </property>
           <item>
            <widget class="QLabel" name="label_name">
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>Name:</string>
             </property>
@@ -111,7 +116,7 @@ QGroupBox::title{
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>23</height>
+              <height>35</height>
              </size>
             </property>
             <property name="styleSheet">
@@ -158,9 +163,14 @@ QGroupBox::title{
            <widget class="QLabel" name="label">
             <property name="minimumSize">
              <size>
-              <width>80</width>
+              <width>100</width>
               <height>0</height>
              </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
             </property>
             <property name="text">
              <string>Intensity:</string>
@@ -177,14 +187,14 @@ QGroupBox::title{
             </property>
             <property name="minimumSize">
              <size>
-              <width>60</width>
-              <height>20</height>
+              <width>80</width>
+              <height>25</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>60</width>
-              <height>20</height>
+              <width>80</width>
+              <height>25</height>
              </size>
             </property>
             <property name="styleSheet">
@@ -231,9 +241,14 @@ QGroupBox::title{
            <widget class="QLabel" name="label_3">
             <property name="minimumSize">
              <size>
-              <width>80</width>
+              <width>100</width>
               <height>0</height>
              </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
             </property>
             <property name="text">
              <string>Initial Rot.:</string>
@@ -250,14 +265,14 @@ QGroupBox::title{
             </property>
             <property name="minimumSize">
              <size>
-              <width>60</width>
-              <height>20</height>
+              <width>80</width>
+              <height>25</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>60</width>
-              <height>20</height>
+              <width>80</width>
+              <height>25</height>
              </size>
             </property>
             <property name="decimals">
@@ -295,9 +310,14 @@ QGroupBox::title{
            <widget class="QLabel" name="label_2">
             <property name="minimumSize">
              <size>
-              <width>80</width>
+              <width>101</width>
               <height>0</height>
              </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
             </property>
             <property name="text">
              <string>Invisible:</string>
@@ -329,6 +349,12 @@ QGroupBox::title{
             </property>
             <property name="text">
              <string/>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>12</width>
+              <height>12</height>
+             </size>
             </property>
             <property name="checked">
              <bool>false</bool>
@@ -382,6 +408,11 @@ QGroupBox::title{
               <height>0</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>Background:</string>
             </property>
@@ -389,6 +420,12 @@ QGroupBox::title{
           </item>
           <item>
            <widget class="QComboBox" name="cBox_background">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>25</height>
+             </size>
+            </property>
             <item>
              <property name="text">
               <string>Dome (Default)</string>
@@ -460,16 +497,16 @@ QGroupBox:title:disabled{
             <number>10</number>
            </property>
            <property name="leftMargin">
-            <number>4</number>
+            <number>8</number>
            </property>
            <property name="topMargin">
-            <number>14</number>
+            <number>22</number>
            </property>
            <property name="rightMargin">
-            <number>4</number>
+            <number>8</number>
            </property>
            <property name="bottomMargin">
-            <number>5</number>
+            <number>12</number>
            </property>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="0,0,0,0,1">
@@ -480,9 +517,14 @@ QGroupBox:title:disabled{
               <widget class="QLabel" name="label_5">
                <property name="minimumSize">
                 <size>
-                 <width>65</width>
+                 <width>100</width>
                  <height>0</height>
                 </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>9</pointsize>
+                </font>
                </property>
                <property name="text">
                 <string>Position:</string>
@@ -493,14 +535,14 @@ QGroupBox:title:disabled{
               <widget class="QSpinBox" name="sBox_posX">
                <property name="minimumSize">
                 <size>
-                 <width>60</width>
-                 <height>0</height>
+                 <width>70</width>
+                 <height>25</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>50</width>
-                 <height>16777215</height>
+                 <width>70</width>
+                 <height>25</height>
                 </size>
                </property>
                <property name="minimum">
@@ -515,14 +557,14 @@ QGroupBox:title:disabled{
               <widget class="QSpinBox" name="sBox_posY">
                <property name="minimumSize">
                 <size>
-                 <width>60</width>
-                 <height>0</height>
+                 <width>70</width>
+                 <height>25</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>50</width>
-                 <height>16777215</height>
+                 <width>70</width>
+                 <height>25</height>
                 </size>
                </property>
                <property name="minimum">
@@ -537,14 +579,14 @@ QGroupBox:title:disabled{
               <widget class="QSpinBox" name="sBox_posZ">
                <property name="minimumSize">
                 <size>
-                 <width>60</width>
-                 <height>0</height>
+                 <width>70</width>
+                 <height>25</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>50</width>
-                 <height>16777215</height>
+                 <width>70</width>
+                 <height>25</height>
                 </size>
                </property>
                <property name="minimum">
@@ -562,7 +604,7 @@ QGroupBox:title:disabled{
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>10</width>
+                 <width>5</width>
                  <height>20</height>
                 </size>
                </property>
@@ -589,6 +631,11 @@ QGroupBox:title:disabled{
                  <height>16777215</height>
                 </size>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>9</pointsize>
+                </font>
+               </property>
                <property name="text">
                 <string>Radius:</string>
                </property>
@@ -598,14 +645,14 @@ QGroupBox:title:disabled{
               <widget class="QSpinBox" name="sBox_radius">
                <property name="minimumSize">
                 <size>
-                 <width>60</width>
-                 <height>0</height>
+                 <width>70</width>
+                 <height>25</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>50</width>
-                 <height>16777215</height>
+                 <width>70</width>
+                 <height>25</height>
                 </size>
                </property>
                <property name="minimum">
@@ -677,14 +724,14 @@ QGroupBox:title:disabled{
             </property>
             <property name="minimumSize">
              <size>
-              <width>100</width>
-              <height>25</height>
+              <width>120</width>
+              <height>30</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>100</width>
-              <height>25</height>
+              <width>120</width>
+              <height>30</height>
              </size>
             </property>
             <property name="text">

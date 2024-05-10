@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>420</width>
-    <height>83</height>
+    <width>421</width>
+    <height>96</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -58,16 +58,16 @@ QGroupBox::title{
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
       <property name="leftMargin">
-       <number>5</number>
+       <number>10</number>
       </property>
       <property name="topMargin">
-       <number>5</number>
+       <number>14</number>
       </property>
       <property name="rightMargin">
-       <number>5</number>
+       <number>10</number>
       </property>
       <property name="bottomMargin">
-       <number>5</number>
+       <number>14</number>
       </property>
       <item>
        <layout class="QHBoxLayout" name="hLayout">
@@ -110,16 +110,16 @@ QGroupBox::title{
            <string notr="true">QPushButton{
 	border: none;
 	image: url(:/layers/icons/layers.png);
-	width: 25px;
-	height: 25px;
+	width: 34px;
+	height: 34px;
 }
 
 QPushButton:checked{
 	border: none;
 	background-color: transparent;
 	image: url(:/layers/icons/layers_clicked.png);
-	width: 25px;
-	height: 25px;
+	width: 34px;
+	height: 34px;
 }</string>
           </property>
           <property name="text">
@@ -166,6 +166,12 @@ QPushButton:checked{
           <property name="enabled">
            <bool>true</bool>
           </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>35</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <pointsize>7</pointsize>
@@ -192,10 +198,16 @@ QPushButton:checked{
         </item>
         <item>
          <widget class="QPushButton" name="btn_path">
+          <property name="minimumSize">
+           <size>
+            <width>32</width>
+            <height>36</height>
+           </size>
+          </property>
           <property name="maximumSize">
            <size>
-            <width>22</width>
-            <height>22</height>
+            <width>32</width>
+            <height>36</height>
            </size>
           </property>
           <property name="toolTip">
@@ -205,16 +217,16 @@ QPushButton:checked{
            <string notr="true">QPushButton{
 	border: none;
 	image: url(:/layers/icons/folder.png);
-	width: 22px;
-	height: 22px;
+	width: 30px;
+	height: 30px;
 }
 
 QPushButton:pressed{
 	border: none;
 	background-color: transparent;
 	image: url(:/layers/icons/folder_pressed.png);
-	width: 22px;
-	height: 22px;
+	width: 30px;
+	height: 30px;
 }</string>
           </property>
           <property name="text">
@@ -267,7 +279,7 @@ QPushButton:pressed{
            <enum>QFrame::Plain</enum>
           </property>
           <property name="lineWidth">
-           <number>1</number>
+           <number>2</number>
           </property>
           <property name="midLineWidth">
            <number>10</number>
@@ -305,16 +317,16 @@ QPushButton:pressed{
            <string notr="true">QPushButton{
 	border: none;
 	image: url(:/layers/icons/rename.png);
-	width: 22px;
-	height: 22px;
+	width: 30px;
+	height: 30px;
 }
 
 QPushButton:pressed{
 	border: none;
 	background-color: transparent;
 	image: url(:/layers/icons/rename_clicked.png);
-	width: 22px;
-	height: 22px;
+	width: 30px;
+	height: 30px;
 }</string>
           </property>
           <property name="text">
@@ -343,16 +355,16 @@ QPushButton:pressed{
            <string notr="true">QPushButton{
 	border: none;
 	image: url(:/layers/icons/trash.png);
-	width: 22px;
-	height: 22px;
+	width: 30px;
+	height: 30px;
 }
 
 QPushButton:pressed{
 	border: none;
 	background-color: transparent;
 	image: url(:/layers/icons/trash_clicked.png);
-	width: 22px;
-	height: 22px;
+	width: 30px;
+	height: 30px;
 }</string>
           </property>
           <property name="text">

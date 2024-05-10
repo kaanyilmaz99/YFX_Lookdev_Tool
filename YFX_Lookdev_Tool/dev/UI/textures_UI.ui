@@ -41,6 +41,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="btn_import_textures">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
        <property name="text">
         <string>Import Textures</string>
        </property>
@@ -48,6 +54,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="btn_create_material">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
        <property name="text">
         <string>Create Base Material</string>
        </property>

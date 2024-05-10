@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>484</width>
-    <height>547</height>
+    <width>589</width>
+    <height>601</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>454</width>
-    <height>393</height>
+    <width>589</width>
+    <height>601</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -50,7 +50,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>5</number>
      </property>
      <property name="iconSize">
       <size>
@@ -106,39 +106,42 @@
            <property name="styleSheet">
             <string notr="true">QGroupBox{
 	border: 1px solid rgb(70, 70, 70);
-    border-radius: 8px;
-	margin-top: 9px;
+     border-radius: 12px;
+	margin-top: 15px;
 }
 
 QGroupBox:title{
 	color: white;
 	subcontrol-position: top center;
 	padding: 0 5px;
-	margin-top: -12px;
+	margin-top: -16px;
 }
 
 QGroupBox:title:disabled{
 	color: gray;
 	subcontrol-position: top center;
 	padding: 0 5px;
-	margin-top: -12px;
+	margin-top: -16px;
 }</string>
            </property>
            <property name="title">
             <string>Create new Scene</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_4">
+            <property name="spacing">
+             <number>8</number>
+            </property>
             <property name="leftMargin">
-             <number>9</number>
+             <number>16</number>
             </property>
             <property name="topMargin">
-             <number>13</number>
+             <number>20</number>
             </property>
             <property name="rightMargin">
-             <number>9</number>
+             <number>16</number>
             </property>
             <property name="bottomMargin">
-             <number>13</number>
+             <number>20</number>
             </property>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -162,13 +165,13 @@ QGroupBox:title:disabled{
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
-                  <height>25</height>
+                  <height>35</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
                   <width>16777215</width>
-                  <height>25</height>
+                  <height>35</height>
                  </size>
                 </property>
                 <property name="styleSheet">
@@ -195,30 +198,30 @@ QGroupBox:title:disabled{
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>0</width>
-                  <height>26</height>
+                  <width>32</width>
+                  <height>36</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>22</width>
-                  <height>26</height>
+                  <width>32</width>
+                  <height>36</height>
                  </size>
                 </property>
                 <property name="styleSheet">
                  <string notr="true">QPushButton{
 	border: none;
 	image: url(:/turntable/icons/folder.png);
-	width: 25px;
-	height: 25px;
+	width: 35px;
+	height: 35px;
 }
 
 QPushButton:pressed{
 	border: none;
 	background-color: transparent;
 	image: url(:/turntable/icons/folder_pressed.png);
-	width: 25px;
-	height: 25px;
+	width: 35px;
+	height: 35px;
 }</string>
                 </property>
                 <property name="text">
@@ -244,6 +247,12 @@ QPushButton:pressed{
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>25</height>
+                 </size>
+                </property>
                 <property name="maximumSize">
                  <size>
                   <width>16777215</width>
@@ -268,39 +277,42 @@ QPushButton:pressed{
            <property name="styleSheet">
             <string notr="true">QGroupBox{
 	border: 1px solid rgb(70, 70, 70);
-    border-radius: 8px;
-	margin-top: 9px;
+     border-radius: 12px;
+	margin-top: 15px;
 }
 
 QGroupBox:title{
 	color: white;
 	subcontrol-position: top center;
 	padding: 0 5px;
-	margin-top: -12px;
+	margin-top: -16px;
 }
 
 QGroupBox:title:disabled{
 	color: gray;
 	subcontrol-position: top center;
 	padding: 0 5px;
-	margin-top: -12px;
+	margin-top: -16px;
 }</string>
            </property>
            <property name="title">
             <string>Load/Save File</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_6">
+            <property name="spacing">
+             <number>8</number>
+            </property>
             <property name="leftMargin">
-             <number>9</number>
+             <number>16</number>
             </property>
             <property name="topMargin">
-             <number>13</number>
+             <number>20</number>
             </property>
             <property name="rightMargin">
-             <number>9</number>
+             <number>16</number>
             </property>
             <property name="bottomMargin">
-             <number>13</number>
+             <number>20</number>
             </property>
             <item>
              <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -309,6 +321,12 @@ QGroupBox:title:disabled{
               </property>
               <item>
                <widget class="QPushButton" name="btn_openFile">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>25</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>Open File</string>
                 </property>
@@ -325,6 +343,9 @@ QGroupBox:title:disabled{
               </property>
               <property name="frameShadow">
                <enum>QFrame::Plain</enum>
+              </property>
+              <property name="lineWidth">
+               <number>2</number>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -344,6 +365,12 @@ QGroupBox:title:disabled{
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>25</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>Save As</string>
                 </property>
@@ -351,9 +378,15 @@ QGroupBox:title:disabled{
               </item>
               <item>
                <widget class="QPushButton" name="btn_save_incr">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>25</height>
+                 </size>
+                </property>
                 <property name="maximumSize">
                  <size>
-                  <width>50</width>
+                  <width>16777215</width>
                   <height>16777215</height>
                  </size>
                 </property>
@@ -411,8 +444,8 @@ QGroupBox:title:disabled{
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>192</width>
-            <height>110</height>
+            <width>497</width>
+            <height>475</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -435,41 +468,50 @@ QGroupBox:title:disabled{
                <property name="styleSheet">
                 <string notr="true">QGroupBox{
 	border: 1px solid rgb(70, 70, 70);
-    border-radius: 8px;
-	margin-top: 9px;
+     border-radius: 12px;
+	margin-top: 15px;
 }
 
 QGroupBox:title{
 	color: white;
 	subcontrol-position: top center;
 	padding: 0 5px;
-	margin-top: -12px;
+	margin-top: -16px;
 }
 
 QGroupBox:title:disabled{
 	color: gray;
 	subcontrol-position: top center;
 	padding: 0 5px;
-	margin-top: -12px;
+	margin-top: -16px;
 }</string>
                </property>
                <property name="title">
                 <string>Add new Asset</string>
                </property>
                <layout class="QHBoxLayout" name="horizontalLayout_17">
+                <property name="spacing">
+                 <number>8</number>
+                </property>
+                <property name="leftMargin">
+                 <number>14</number>
+                </property>
                 <property name="topMargin">
-                 <number>13</number>
+                 <number>20</number>
+                </property>
+                <property name="rightMargin">
+                 <number>14</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>13</number>
+                 <number>20</number>
                 </property>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_16" stretch="0,0,0,1,0,0">
                   <property name="leftMargin">
-                   <number>6</number>
+                   <number>2</number>
                   </property>
                   <property name="rightMargin">
-                   <number>6</number>
+                   <number>2</number>
                   </property>
                   <property name="bottomMargin">
                    <number>0</number>
@@ -479,13 +521,13 @@ QGroupBox:title:disabled{
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
-                      <height>20</height>
+                      <height>35</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
                       <width>16777215</width>
-                      <height>25</height>
+                      <height>35</height>
                      </size>
                     </property>
                     <property name="styleSheet">
@@ -509,14 +551,14 @@ QGroupBox:title:disabled{
                    <widget class="QPushButton" name="btn_asset_choose">
                     <property name="minimumSize">
                      <size>
-                      <width>24</width>
-                      <height>24</height>
+                      <width>32</width>
+                      <height>36</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>24</width>
-                      <height>24</height>
+                      <width>32</width>
+                      <height>36</height>
                      </size>
                     </property>
                     <property name="styleSheet">
@@ -564,6 +606,9 @@ QPushButton:pressed{
                     <property name="frameShadow">
                      <enum>QFrame::Plain</enum>
                     </property>
+                    <property name="lineWidth">
+                     <number>2</number>
+                    </property>
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
                     </property>
@@ -586,6 +631,12 @@ QPushButton:pressed{
                    <widget class="QPushButton" name="btn_asset_import">
                     <property name="enabled">
                      <bool>false</bool>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>90</width>
+                      <height>25</height>
+                     </size>
                     </property>
                     <property name="text">
                      <string>Import Asset</string>
@@ -657,13 +708,16 @@ QPushButton:pressed{
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>98</width>
-            <height>148</height>
+            <width>489</width>
+            <height>477</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_11">
            <item>
             <layout class="QVBoxLayout" name="vlayout" stretch="0,0,0,1">
+             <property name="spacing">
+              <number>8</number>
+             </property>
              <property name="leftMargin">
               <number>3</number>
              </property>
@@ -678,28 +732,40 @@ QPushButton:pressed{
                <property name="styleSheet">
                 <string notr="true">QGroupBox{
 	border: 1px solid rgb(70, 70, 70);
-    border-radius: 8px;
-	margin-top: 9px;
+     border-radius: 12px;
+	margin-top: 15px;
 }
 
 QGroupBox:title{
 	color: white;
 	subcontrol-position: top center;
 	padding: 0 5px;
-	margin-top: -12px;
+	margin-top: -16px;
 }
 
 QGroupBox:title:disabled{
 	color: gray;
 	subcontrol-position: top center;
 	padding: 0 5px;
-	margin-top: -12px;
+	margin-top: -16px;
 }</string>
                </property>
                <property name="title">
                 <string>Texture Folder</string>
                </property>
                <layout class="QHBoxLayout" name="horizontalLayout_8">
+                <property name="leftMargin">
+                 <number>10</number>
+                </property>
+                <property name="topMargin">
+                 <number>10</number>
+                </property>
+                <property name="rightMargin">
+                 <number>10</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>10</number>
+                </property>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_7">
                   <property name="leftMargin">
@@ -719,13 +785,13 @@ QGroupBox:title:disabled{
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
-                      <height>24</height>
+                      <height>35</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
                       <width>16777215</width>
-                      <height>25</height>
+                      <height>35</height>
                      </size>
                     </property>
                     <property name="toolTip">
@@ -749,14 +815,14 @@ QGroupBox:title:disabled{
                    <widget class="QPushButton" name="btn_choose_texture">
                     <property name="minimumSize">
                      <size>
-                      <width>0</width>
-                      <height>26</height>
+                      <width>32</width>
+                      <height>36</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>22</width>
-                      <height>26</height>
+                      <width>32</width>
+                      <height>36</height>
                      </size>
                     </property>
                     <property name="styleSheet">
@@ -807,6 +873,12 @@ QPushButton:pressed{
                 <widget class="QPushButton" name="btn_import_texture">
                  <property name="enabled">
                   <bool>false</bool>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>25</height>
+                  </size>
                  </property>
                  <property name="styleSheet">
                   <string notr="true">QPushButton{
@@ -888,8 +960,8 @@ QPushButton:disabled{
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>135</width>
-            <height>106</height>
+            <width>497</width>
+            <height>475</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -918,44 +990,53 @@ QPushButton:disabled{
                <property name="styleSheet">
                 <string notr="true">QGroupBox{
 	border: 1px solid rgb(70, 70, 70);
-    border-radius: 8px;
-	margin-top: 9px;
+     border-radius: 12px;
+	margin-top: 15px;
 }
 
 QGroupBox:title{
 	color: white;
 	subcontrol-position: top center;
 	padding: 0 5px;
-	margin-top: -12px;
+	margin-top: -16px;
 }
 
 QGroupBox:title:disabled{
 	color: gray;
 	subcontrol-position: top center;
 	padding: 0 5px;
-	margin-top: -12px;
+	margin-top: -16px;
 }</string>
                </property>
                <property name="title">
                 <string>Create a new HDRI</string>
                </property>
                <layout class="QHBoxLayout" name="horizontalLayout_2">
+                <property name="spacing">
+                 <number>8</number>
+                </property>
+                <property name="leftMargin">
+                 <number>14</number>
+                </property>
                 <property name="topMargin">
-                 <number>13</number>
+                 <number>20</number>
+                </property>
+                <property name="rightMargin">
+                 <number>14</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>13</number>
+                 <number>20</number>
                 </property>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout">
                   <property name="leftMargin">
-                   <number>6</number>
+                   <number>3</number>
                   </property>
                   <property name="topMargin">
                    <number>0</number>
                   </property>
                   <property name="rightMargin">
-                   <number>6</number>
+                   <number>3</number>
                   </property>
                   <property name="bottomMargin">
                    <number>0</number>
@@ -971,13 +1052,13 @@ QGroupBox:title:disabled{
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
-                      <height>20</height>
+                      <height>35</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
                       <width>16777215</width>
-                      <height>25</height>
+                      <height>35</height>
                      </size>
                     </property>
                     <property name="font">
@@ -1009,14 +1090,14 @@ QGroupBox:title:disabled{
                     </property>
                     <property name="minimumSize">
                      <size>
-                      <width>0</width>
-                      <height>0</height>
+                      <width>120</width>
+                      <height>35</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
                       <width>120</width>
-                      <height>30</height>
+                      <height>35</height>
                      </size>
                     </property>
                     <property name="text">
@@ -1083,8 +1164,8 @@ QGroupBox:title:disabled{
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>138</width>
-            <height>104</height>
+            <width>497</width>
+            <height>475</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -1104,33 +1185,42 @@ QGroupBox:title:disabled{
                <property name="styleSheet">
                 <string notr="true">QGroupBox{
 	border: 1px solid rgb(70, 70, 70);
-    border-radius: 8px;
-	margin-top: 9px;
+     border-radius: 12px;
+	margin-top: 15px;
 }
 
 QGroupBox:title{
 	color: white;
 	subcontrol-position: top center;
 	padding: 0 5px;
-	margin-top: -12px;
+	margin-top: -16px;
 }
 
 QGroupBox:title:disabled{
 	color: gray;
 	subcontrol-position: top center;
 	padding: 0 5px;
-	margin-top: -12px;
+	margin-top: -16px;
 }</string>
                </property>
                <property name="title">
                 <string>Create a new Camera</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_16">
+                <property name="spacing">
+                 <number>8</number>
+                </property>
+                <property name="leftMargin">
+                 <number>11</number>
+                </property>
                 <property name="topMargin">
-                 <number>7</number>
+                 <number>14</number>
+                </property>
+                <property name="rightMargin">
+                 <number>11</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>7</number>
+                 <number>14</number>
                 </property>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_13" stretch="0,0">
@@ -1151,13 +1241,13 @@ QGroupBox:title:disabled{
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
-                      <height>20</height>
+                      <height>35</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
                       <width>16777215</width>
-                      <height>25</height>
+                      <height>35</height>
                      </size>
                     </property>
                     <property name="styleSheet">
@@ -1179,10 +1269,16 @@ QGroupBox:title:disabled{
                     <property name="enabled">
                      <bool>false</bool>
                     </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>120</width>
+                      <height>35</height>
+                     </size>
+                    </property>
                     <property name="maximumSize">
                      <size>
                       <width>120</width>
-                      <height>16777215</height>
+                      <height>35</height>
                      </size>
                     </property>
                     <property name="text">
@@ -1243,8 +1339,8 @@ QGroupBox:title:disabled{
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>188</width>
-            <height>183</height>
+            <width>559</width>
+            <height>554</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1253,6 +1349,9 @@ QGroupBox:title:disabled{
            </property>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_20" stretch="0,0,0,0,1">
+             <property name="spacing">
+              <number>8</number>
+             </property>
              <property name="leftMargin">
               <number>10</number>
              </property>
@@ -1270,22 +1369,22 @@ QGroupBox:title:disabled{
                <property name="styleSheet">
                 <string notr="true">QGroupBox{
 	border: 1px solid rgb(70, 70, 70);
-    border-radius: 8px;
-	margin-top: 9px;
+     border-radius: 12px;
+	margin-top: 15px;
 }
 
 QGroupBox:title{
 	color: white;
 	subcontrol-position: top center;
 	padding: 0 5px;
-	margin-top: -12px;
+	margin-top: -16px;
 }
 
 QGroupBox:title:disabled{
 	color: gray;
 	subcontrol-position: top center;
 	padding: 0 5px;
-	margin-top: -12px;
+	margin-top: -16px;
 }</string>
                </property>
                <property name="title">
@@ -1293,16 +1392,16 @@ QGroupBox:title:disabled{
                </property>
                <layout class="QHBoxLayout" name="horizontalLayout_5">
                 <property name="leftMargin">
-                 <number>9</number>
+                 <number>16</number>
                 </property>
                 <property name="topMargin">
-                 <number>7</number>
+                 <number>14</number>
                 </property>
                 <property name="rightMargin">
-                 <number>9</number>
+                 <number>16</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>7</number>
+                 <number>14</number>
                 </property>
                 <item>
                  <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -1323,7 +1422,13 @@ QGroupBox:title:disabled{
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
-                      <height>25</height>
+                      <height>35</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>35</height>
                      </size>
                     </property>
                     <property name="styleSheet">
@@ -1341,14 +1446,14 @@ QGroupBox:title:disabled{
                    <widget class="QPushButton" name="btn_render_path">
                     <property name="minimumSize">
                      <size>
-                      <width>24</width>
-                      <height>24</height>
+                      <width>32</width>
+                      <height>36</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>24</width>
-                      <height>24</height>
+                      <width>32</width>
+                      <height>36</height>
                      </size>
                     </property>
                     <property name="styleSheet">
@@ -1390,6 +1495,9 @@ QPushButton:pressed{
                     <property name="frameShadow">
                      <enum>QFrame::Plain</enum>
                     </property>
+                    <property name="lineWidth">
+                     <number>2</number>
+                    </property>
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
                     </property>
@@ -1412,6 +1520,12 @@ QPushButton:pressed{
                    <widget class="QPushButton" name="btn_renderout">
                     <property name="enabled">
                      <bool>false</bool>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>120</width>
+                      <height>35</height>
+                     </size>
                     </property>
                     <property name="text">
                      <string>Render</string>
@@ -1448,6 +1562,12 @@ QPushButton:pressed{
                 <widget class="QPushButton" name="btn_render_settings">
                  <property name="enabled">
                   <bool>false</bool>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>25</height>
+                  </size>
                  </property>
                  <property name="styleSheet">
                   <string notr="true">QPushButton{
@@ -1488,6 +1608,12 @@ QPushButton:disabled{
                </property>
                <item>
                 <widget class="QPushButton" name="btn_aovs">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>25</height>
+                  </size>
+                 </property>
                  <property name="styleSheet">
                   <string notr="true">QPushButton{
 	border: none;

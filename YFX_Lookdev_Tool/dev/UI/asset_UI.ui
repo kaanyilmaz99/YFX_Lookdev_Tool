@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>367</width>
-    <height>83</height>
+    <width>400</width>
+    <height>96</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
      <property name="styleSheet">
       <string notr="true">QGroupBox{
 	border: 1px solid rgb(70, 70, 70);
-    border-radius: 8px;
+     border-radius: 10px;
 	margin-top: 9px;
 }
 
@@ -44,7 +44,7 @@ QGroupBox::title{
 	left: 15px;
 	subcontrol-position: top left;
 	padding: 0 5px;
-	margin-top: -12px;
+	margin-top: -16px;
 }</string>
      </property>
      <property name="title">
@@ -58,16 +58,16 @@ QGroupBox::title{
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
       <property name="leftMargin">
-       <number>5</number>
+       <number>10</number>
       </property>
       <property name="topMargin">
-       <number>5</number>
+       <number>14</number>
       </property>
       <property name="rightMargin">
-       <number>5</number>
+       <number>10</number>
       </property>
       <property name="bottomMargin">
-       <number>5</number>
+       <number>14</number>
       </property>
       <item>
        <layout class="QHBoxLayout" name="hLayout" stretch="0,0,0,0,0,1,0,0,0,0">
@@ -110,16 +110,16 @@ QGroupBox::title{
            <string notr="true">QPushButton{
 	border: none;
 	image: url(:/asset/icons/asset.png);
-	width: 30px;
-	height: 30px;
+	width: 40px;
+	height: 40px;
 }
 
 QPushButton:checked{
 	border: none;
 	background-color: transparent;
 	image: url(:/asset/icons/asset_clicked.png);
-	width: 30px;
-	height: 30px;
+	width: 40px;
+	height: 40px;
 }</string>
           </property>
           <property name="text">
@@ -157,16 +157,16 @@ QPushButton:checked{
            <string notr="true">QPushButton{
 	border: none;
 	image: url(:/asset/icons/cameras_lock.png);
-	width: 20px;
-	height: 20px;
+	width: 28px;
+	height: 28px;
 }
 
 QPushButton:checked{
 	border: none;
 	background-color: transparent;
 	image: url(:/asset/icons/cameras_locked.png);
-	width: 20px;
-	height: 20px;
+	width: 28px;
+	height: 28px;
 }</string>
           </property>
           <property name="text">
@@ -195,6 +195,17 @@ QPushButton:checked{
         </item>
         <item>
          <widget class="QLabel" name="label">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>Subdivisions:</string>
           </property>
@@ -204,8 +215,8 @@ QPushButton:checked{
          <widget class="QSpinBox" name="sBox_subdiv">
           <property name="minimumSize">
            <size>
-            <width>50</width>
-            <height>0</height>
+            <width>80</width>
+            <height>20</height>
            </size>
           </property>
           <property name="minimum">
@@ -255,7 +266,7 @@ QPushButton:checked{
            <enum>QFrame::Plain</enum>
           </property>
           <property name="lineWidth">
-           <number>1</number>
+           <number>2</number>
           </property>
           <property name="midLineWidth">
            <number>10</number>
@@ -290,20 +301,26 @@ QPushButton:checked{
            <string notr="true">QPushButton{
 	border: none;
 	image: url(:/asset/icons/rename.png);
-	width: 22px;
-	height: 22px;
+	width: 30px;
+	height: 30px;
 }
 
 QPushButton:pressed{
 	border: none;
 	background-color: transparent;
 	image: url(:/asset/icons/rename_clicked.png);
-	width: 22px;
-	height: 22px;
+	width: 30px;
+	height: 30px;
 }</string>
           </property>
           <property name="text">
            <string/>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>12</width>
+            <height>12</height>
+           </size>
           </property>
          </widget>
         </item>
@@ -328,16 +345,16 @@ QPushButton:pressed{
            <string notr="true">QPushButton{
 	border: none;
 	image: url(:/asset/icons/trash.png);
-	width: 22px;
-	height: 22px;
+	width: 30px;
+	height: 30px;
 }
 
 QPushButton:pressed{
 	border: none;
 	background-color: transparent;
 	image: url(:/asset/icons/trash_clicked.png);
-	width: 22px;
-	height: 22px;
+	width: 30px;
+	height: 30px;
 }</string>
           </property>
           <property name="text">

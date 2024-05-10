@@ -64,7 +64,7 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
         self.wg_util = QtUiTools.QUiLoader().load(MAIN_UI_PATH)
         self.wg_util.setLayout(main_layout)
         self.setWidget(self.wg_util)                                                                                                                                                                                                                                                            
-        self.resize(461, 540)
+        self.resize(589, 601)
 
         # Home Tab
         if dmf.get_tt_setup():
@@ -377,3 +377,5 @@ def main_widget():
     main_widget.check_scene()
     main_widget.setFloating(True)
     main_widget.show()
+
+main_widget()
