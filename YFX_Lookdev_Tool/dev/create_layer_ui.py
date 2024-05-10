@@ -12,8 +12,6 @@
 #****************************************************************************************************
 
 import os
-import sys
-import importlib
 
 import qtmax
 from pymxs import runtime as rt
@@ -32,12 +30,6 @@ from UI.icons import icons
 from UI.icons import tt_icons
 from UI.icons import asset_icons
 from UI.icons import camera_icons
-
-sys.path.append(os.path.dirname(__file__))
-importlib.reload(main_ui)
-importlib.reload(cc)
-importlib.reload(ct)
-importlib.reload(ca)
 
 DIR_PATH = os.path.dirname(__file__)
 LAYER_UI_PATH = DIR_PATH + r'\UI\layer_UI.ui'

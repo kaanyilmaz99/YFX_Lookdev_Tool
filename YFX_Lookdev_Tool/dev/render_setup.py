@@ -13,7 +13,6 @@
 
 import os
 import json
-import importlib
 
 import qtmax
 from pymxs import runtime as rt
@@ -25,9 +24,6 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from PySide2 import QtWidgets, QtGui, QtUiTools, QtCore
 from PySide2.QtCore import Slot, Signal, QProcess, QObject
-
-importlib.reload(ct)
-importlib.reload(dmf)
 
 DIR_PATH = os.path.dirname(__file__)
 RS_PATH = DIR_PATH + r'\render_presets/'

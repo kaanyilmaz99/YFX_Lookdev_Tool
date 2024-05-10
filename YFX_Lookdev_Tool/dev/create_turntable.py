@@ -12,7 +12,6 @@
 
 import os
 import math
-import importlib
 
 import render_setup as rs
 import create_animations as anim
@@ -20,9 +19,6 @@ import default_max_functions as dmf
 import create_lookdev_charts as clc
 
 from pymxs import runtime as rt
-
-importlib.reload(clc)
-importlib.reload(anim)
 
 DIR_PATH = os.path.dirname(__file__)
 RS_PATH = DIR_PATH + r'\render_presets/'

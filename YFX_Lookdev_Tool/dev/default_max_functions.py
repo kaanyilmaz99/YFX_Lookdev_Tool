@@ -9,19 +9,12 @@
 #****************************************************************************************************
 
 import os
-import sys
-sys.path.append(os.path.dirname(__file__))                       # Can be deleted later
-import importlib
 
 from pymxs import runtime as rt
 
 import create_animations as anim
 import create_turntable as ct
-import render_setup as rs
-
-importlib.reload(anim)
-importlib.reload(rs)
-importlib.reload(ct)                                                # Can be deleted later
+import render_setup as rs                                            
 
 DIR_PATH = os.path.dirname(__file__)
 

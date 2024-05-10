@@ -17,10 +17,7 @@
 #****************************************************************************************************
 
 import os
-import sys
 import qtmax
-sys.path.append(os.path.dirname(__file__))                       # Can be deleted later
-import importlib
 
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
@@ -38,14 +35,6 @@ import default_max_functions as dmf
 from UI.icons import icons
 from UI.icons import tt_icons
 from UI.icons import camera_icons
-
-importlib.reload(cl)                                             # Can be deleted later
-importlib.reload(ct)                                             # Can be deleted later
-importlib.reload(cc)                                             # Can be deleted later
-importlib.reload(ca)                                             # Can be deleted later
-importlib.reload(rs)                                             # Can be deleted later
-importlib.reload(dmf)
-importlib.reload(ctex)                                           # Can be deleted later 
 
 DIR_PATH = os.path.dirname(__file__)
 MAIN_UI_PATH = DIR_PATH + r'\UI\turntable_UI.ui'
