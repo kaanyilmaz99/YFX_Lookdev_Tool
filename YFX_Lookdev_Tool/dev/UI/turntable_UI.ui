@@ -351,6 +351,12 @@ QGroupBox:title:disabled{
               </item>
               <item>
                <widget class="QPushButton" name="btn_save_incr">
+                <property name="maximumSize">
+                 <size>
+                  <width>50</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>Incremental Save</string>
                 </property>
@@ -405,8 +411,8 @@ QGroupBox:title:disabled{
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>434</width>
-            <height>477</height>
+            <width>192</width>
+            <height>110</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -651,8 +657,8 @@ QPushButton:pressed{
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>436</width>
-            <height>489</height>
+            <width>98</width>
+            <height>148</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -882,8 +888,8 @@ QPushButton:disabled{
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>434</width>
-            <height>477</height>
+            <width>135</width>
+            <height>106</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1077,8 +1083,8 @@ QGroupBox:title:disabled{
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>434</width>
-            <height>477</height>
+            <width>138</width>
+            <height>104</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -1237,8 +1243,8 @@ QGroupBox:title:disabled{
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>434</width>
-            <height>477</height>
+            <width>188</width>
+            <height>183</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_21">
