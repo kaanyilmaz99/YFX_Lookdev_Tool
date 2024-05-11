@@ -70,6 +70,7 @@ class Textures():
 # EXECUTE BUTTONS ----------------------------------------------------------------------------------------------------------------
 
     def import_textures(self):
+        rt.sme.Open()
         node_view = self.get_node_view()
         line_edit = self.wg_util.findChild(QtWidgets.QLineEdit, 'line_texture_path')
 
