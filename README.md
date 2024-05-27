@@ -22,8 +22,8 @@ The YFX - Lookdev Tool for 3dsMax helps you to create a Turntable setup with all
  - [x] Dockable V-Ray FrameBuffer (experimental)
 
 # How it works 
-1.) </br> ![01_Start_3dsMax](https://github.com/kaanyilmaz99/YFX_Lookdev_Tool/assets/52401788/ecaf2380-202f-4049-aa4d-a114dd5c8eda)
-After downloading the tool, just execute the 3dsMax.bat file and </br> 
+1.) </br>
+After downloading the tool, just execute the 3dsMax.bat file and </br>     ![01_Start_3dsMax](https://github.com/kaanyilmaz99/YFX_Lookdev_Tool/assets/52401788/ecaf2380-202f-4049-aa4d-a114dd5c8eda)
 it launches the software with all the scripts. You should see a </br> 
 new button appearing in the top toolbar of your 3dsMax main window. </br>
 After clicking the button, it will open up the Main UI of the tool.
