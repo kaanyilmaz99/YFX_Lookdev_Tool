@@ -21,16 +21,10 @@ The YFX - Lookdev Tool for 3dsMax helps you to create a Turntable setup with all
  - [x] V-Ray CPU and GPU render
  - [x] Dockable V-Ray FrameBuffer (experimental)
 
- </br>
- 
- <span style="font-size:1.8em;">How it works</span> | <br />
- -|-
-1.) After downloading the tool, just execute the 3dsMax.bat file </br> and it launches the software with all the scripts. You should see a new button appearing in the top toolbar of your 3dsMax main window. After clicking the button, it will open up the Main UI of the tool. | ![01_Start_3dsMax](https://github.com/kaanyilmaz99/YFX_Lookdev_Tool/assets/52401788/ecaf2380-202f-4049-aa4d-a114dd5c8eda)
-2.) In the **Home Tab** press the folder button to search for your </br> desired 3D Asset. Then press the **Create Turntable** button to build the scene and import your file. Inside the **Asset Tab** you can choose more mesh files to import and also change the subdivisions of existing assets. | <img src="./gifs/01_Start_3dsMax.gif"/>
-3.) In the **Texture Tab** you can specify your texture folder and import your textures directly into the Material Editor. It will recognize **UDIM** files and will create a VRay Bitmap node per texture. You can also create a Base Material, which will connect all your textures automatically. | <img src="./gifs/01_Start_3dsMax.gif"/>
-4.) In the **HDRI Tab** you can import any HDRI map of your choice into the scene. First type in a name and then press **Create HDRI**. Now you can choose a .HDRI file by clicking the **Folder Icon** button. After that your DomeLight is set up and animated. Clicking the **Edit Icon** button will let you change a few DomeLight properties and you can also change the background. | <img src="./gifs/01_Start_3dsMax.gif"/>
-5.) To create a camera for the scene, go to the **Camera** tab, type in a name and press **Create Camera**.-- The camera will be created based on your perspective view. Together with the camera comes also the reference spheres with MacBeth Charts. You can simply change the focal length in the tab and the charts will stick with it. | <img src="./gifs/01_Start_3dsMax.gif"/>
-6.) In the **Render Tab** you can specify the render location and simply hit **Render**. You can also open up the *Render Settings* rollout to tweak a few parameters. Changing the *Frame Range* will automatically update all the Turntable animations to the desired length. You can also enable **Vertical asset rotation**, however if you transform your asset you need to press **Update Vertical Rotator** to center the pivot for the vertical animation. Further down in the VRay Settings you can choose between different **Quality Presets** or you tweak the parameters manually. Under **Global Switches** you can define the Colorspace and if you choose **ACES** you can set up an ocio path manually if you don't have it set up in the environment variable already. In the **AOVs** rollout you can choose which Render Elements you want to use  *(all are enabled by default)*. | <img src="./gifs/01_Start_3dsMax.gif"/>
+# How it works 
+1.) </br>
+After downloading the tool, just execute the 3dsMax.bat file and </br> it launches the software with all the scripts. You should see a new button appearing in the top toolbar of your 3dsMax main window. After clicking the button, it will open up the Main UI of the tool. ![01_Start_3dsMax](https://github.com/kaanyilmaz99/YFX_Lookdev_Tool/assets/52401788/ecaf2380-202f-4049-aa4d-a114dd5c8eda)
+
 
 # To do List
 
