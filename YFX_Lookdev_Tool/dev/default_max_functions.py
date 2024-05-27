@@ -90,6 +90,14 @@ def update_framerange(initial_rotation, v_rot):
     rt.animationRange = rt.interval(rt.rendStart, rt.rendEnd)
     rt.renderSceneDialog.update()
 
+def get_start_frame():
+    start_frame = str(rt.rendStart).replace('f', '')
+    return int(start_frame)
+
+def get_end_frame():
+    end_frame = str(rt.rendEnd).replace('f', '')
+    return int(end_frame)
+
 def include_asset_to_wireframe(asset):
     re = rt.MaxOps.GetCurRenderElementMgr()
     re_amount = re.NumRenderElements()
@@ -138,10 +146,34 @@ def get_vray():
             vr = rt.renderers.current
     return vr
 
-def set_vray_render_output(render_path):
-    vr = get_vray()
-    vr.output_rawFileName = render_path
-    vr.output_force32bit_3dsmax_vfb = True
+def get_vray_gpu():
+    for renderer in rt.rendererClass.classes:
+        if "V_Ray" in str(renderer) and "GPU" in str(renderer):
+            rt.renderers.current = renderer
+            vr = rt.renderers.current
+    return vr
+
+def set_vray():
+    rt.renderers.current = rt.vray()
+
+def set_vray_gpu():
+    rt.renderers.current = rt.VrayRT()
+    rt.renderers.current.opencl_textureFormat = 0
+
+def get_current_render():
+    return str(rt.renderers.current)
+
+def set_vray_render_output(render_path, engine):
+    if engine == 'V-Ray':
+        vr = get_vray()
+        vr.output_saveRawFile = True
+        vr.output_rawFileName = render_path
+        vr.output_force32bit_3dsmax_vfb = True
+    elif engine == 'V-Ray GPU':
+        vr = get_vray_gpu()
+        vr.V_Ray_Settings.output_saveRawFile = True
+        vr.V_Ray_Settings.output_rawFileName = render_path
+        vr.V_Ray_Settings.output_force32bit_3dsmax_vfb = True
 
     rt.renderSceneDialog.update()
 

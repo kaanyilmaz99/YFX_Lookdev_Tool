@@ -32,6 +32,8 @@ importlib.reload(dmf)
 DIR_PATH = os.path.dirname(__file__)
 RS_PATH = DIR_PATH + r'\render_presets/'
 RS_UI_PATH = DIR_PATH + r'\UI\renderSettings_UI.ui'
+VRAY_UI_PATH = DIR_PATH + r'\UI\vray_settings_UI.ui'
+VRAY_GPU_UI_PATH = DIR_PATH + r'\UI\vray_gpu_settings_UI.ui'
 AOV_UI_PATH = DIR_PATH + r'\UI\aov_UI.ui'
 JSON_PATH = DIR_PATH + r'\Turntable_Configuration.json'
 
@@ -73,7 +75,7 @@ class Render_Settings():
 
 # RENDER SETTINGS  ------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    def show_render_settings(self, parent):
+    def show_render_settings(self, parent, render_engine):
         self.wg_util = parent
         self.wg_rs = QtUiTools.QUiLoader().load(RS_UI_PATH)
         self.wg_rs.setAttribute(QtCore.Qt.WA_DeleteOnClose)
@@ -81,15 +83,51 @@ class Render_Settings():
         layout_rs = self.wg_util.findChild(QVBoxLayout, 'layout_rs')
         layout_rs.insertWidget(1, self.wg_rs)
 
+        self.add_render_engine(render_engine)
         self.refresh_render_settings()
-        self.connect_render_settings()
+        self.connect_common_settings()
 
     def hide_render_settings(self, parent):
         self.wg_util = parent
         layout_rs = self.wg_util.findChild(QWidget, 'wg_rs')
         layout_rs.deleteLater()
 
-    def connect_render_settings(self):
+    def add_render_engine(self, render_engine):
+        if render_engine == 'V-Ray':
+            self.wg_vray = QtUiTools.QUiLoader().load(VRAY_UI_PATH)
+            layout_settings = self.wg_rs.findChild(QVBoxLayout, 'layout_render_settings')
+            layout_settings.insertWidget(1, self.wg_vray)
+            self.connect_vray_settings()
+            self.refresh_vray_settings()
+
+        elif render_engine == 'V-Ray GPU':
+            self.wg_vray_gpu = QtUiTools.QUiLoader().load(VRAY_GPU_UI_PATH)
+            layout_settings = self.wg_rs.findChild(QVBoxLayout, 'layout_render_settings')
+            layout_settings.insertWidget(1, self.wg_vray_gpu)
+            self.connect_vray_gpu_settings()
+            self.refresh_vray_gpu_settings()
+
+    def connect_vray_gpu_settings(self):
+        self.wg_vray_gpu.sBox_gpu_samples.valueChanged.connect(lambda: self.change_samples(self.wg_vray_gpu.sBox_gpu_samples.value()))
+        self.wg_vray_gpu.dsBox_gpu_noise.valueChanged.connect(lambda: self.change_gpu_noise(self.wg_vray_gpu.dsBox_gpu_noise.value()))
+        self.wg_vray_gpu.dsBox_gpu_noise.valueChanged.connect(lambda: self.change_gpu_noise(self.wg_vray_gpu.dsBox_gpu_noise.value()))
+        self.wg_vray_gpu.cBox_engine.currentTextChanged.connect(lambda: self.change_engine(self.wg_vray_gpu.cBox_engine.currentText()))
+        self.wg_vray_gpu.cBox_displacement.stateChanged.connect(lambda: self.toggle_gpu_displacement(self.wg_vray_gpu.cBox_displacement.isChecked()))
+
+    def connect_vray_settings(self):
+        self.wg_vray.cBox_renderSettings.currentTextChanged.connect(lambda: self.change_render_preset(self.wg_vray.cBox_renderSettings.currentText()))
+        self.wg_vray.sBox_minSubdiv.valueChanged.connect(lambda: self.change_minSubdiv(self.wg_vray.sBox_minSubdiv.value()))
+        self.wg_vray.sBox_maxSubdiv.valueChanged.connect(lambda: self.change_maxSubdiv(self.wg_vray.sBox_maxSubdiv.value()))
+        self.wg_vray.dsBox_noise.valueChanged.connect(lambda: self.change_noiseThreshold(self.wg_vray.dsBox_noise.value()))
+        self.wg_vray.sBox_shading.valueChanged.connect(lambda: self.change_shadingRate(self.wg_vray.sBox_shading.value()))
+        self.wg_vray.sBox_bucket.valueChanged.connect(lambda: self.change_bucketSize(self.wg_vray.sBox_bucket.value()))
+
+        self.wg_vray.cBox_lights.stateChanged.connect(lambda: self.toggle_lights(self.wg_vray.cBox_lights.isChecked()))
+        self.wg_vray.cBox_gi.stateChanged.connect(lambda: self.toggle_gi(self.wg_vray.cBox_gi.isChecked()))
+        self.wg_vray.cBox_shadows.stateChanged.connect(lambda: self.toggle_shadows(self.wg_vray.cBox_shadows.isChecked()))
+        self.wg_vray.cBox_displacement.stateChanged.connect(lambda: self.toggle_displacement(self.wg_vray.cBox_displacement.isChecked()))
+
+    def connect_common_settings(self):
         self.wg_rs.pBtn_720.clicked.connect(self.clicked_resolution_720)
         self.wg_rs.pBtn_1080.clicked.connect(self.clicked_resolution_1080)
         self.wg_rs.pBtn_1440.clicked.connect(self.clicked_resolution_1440)
@@ -99,26 +137,15 @@ class Render_Settings():
         self.wg_rs.sBox_startFrame.valueChanged.connect(lambda: self.change_startFrame(self.wg_rs.sBox_startFrame.value()))
         self.wg_rs.sBox_endFrame.valueChanged.connect(lambda: self.change_endFrame(self.wg_rs.sBox_endFrame.value()))
         self.wg_rs.sBox_nth.valueChanged.connect(lambda: self.change_nthFrame(self.wg_rs.sBox_nth.value()))
-        
-        self.wg_rs.cBox_renderSettings.currentTextChanged.connect(lambda: self.change_render_preset(self.wg_rs.cBox_renderSettings.currentText()))
-        self.wg_rs.sBox_minSubdiv.valueChanged.connect(lambda: self.change_minSubdiv(self.wg_rs.sBox_minSubdiv.value()))
-        self.wg_rs.sBox_maxSubdiv.valueChanged.connect(lambda: self.change_maxSubdiv(self.wg_rs.sBox_maxSubdiv.value()))
-        self.wg_rs.dsBox_noise.valueChanged.connect(lambda: self.change_noiseThreshold(self.wg_rs.dsBox_noise.value()))
-        self.wg_rs.sBox_shading.valueChanged.connect(lambda: self.change_shadingRate(self.wg_rs.sBox_shading.value()))
-        self.wg_rs.sBox_bucket.valueChanged.connect(lambda: self.change_bucketSize(self.wg_rs.sBox_bucket.value()))
-        self.wg_rs.pBtn_vfb.clicked.connect(show_vfb)
 
-        self.wg_rs.cBox_lights.stateChanged.connect(lambda: self.toggle_lights(self.wg_rs.cBox_lights.isChecked()))
-        self.wg_rs.cBox_gi.stateChanged.connect(lambda: self.toggle_gi(self.wg_rs.cBox_gi.isChecked()))
-        self.wg_rs.cBox_shadows.stateChanged.connect(lambda: self.toggle_shadows(self.wg_rs.cBox_shadows.isChecked()))
-        self.wg_rs.cBox_displacement.stateChanged.connect(lambda: self.toggle_displacement(self.wg_rs.cBox_displacement.isChecked()))
-        self.wg_rs.cBox_colorspace.currentTextChanged.connect(lambda: self.change_colorspace(self.wg_rs.cBox_colorspace.currentText()))
-        self.wg_rs.cBox_ground_plane.stateChanged.connect(self.toggle_ground_plane)
         self.wg_rs.cBox_vertical_rot.stateChanged.connect(lambda: self.toggle_vertical_rotation(self.wg_rs.cBox_vertical_rot.isChecked()))
         self.wg_rs.btn_vertical_rotator.clicked.connect(lambda: ct.TT_Setup().get_asset_center())
+
+        self.wg_rs.cBox_ground_plane.stateChanged.connect(self.toggle_ground_plane)
+        
+        self.wg_rs.cBox_colorspace.currentTextChanged.connect(lambda: self.change_colorspace(self.wg_rs.cBox_colorspace.currentText()))
         self.wg_rs.btn_ocio.clicked.connect(self.choose_ocio_file)
         self.wg_rs.line_ocio.textChanged.connect(self.set_ocio_path)
-
 
 # RENDER SETTINGS - COMMON PARAMETERS ---------------------------------------
 
@@ -168,14 +195,18 @@ class Render_Settings():
 
     def change_render_preset(self, rs_preset):
         self.initial_render_settings(rs_preset)
-        self.refresh_render_settings()
-        self.wg_rs.cBox_renderSettings.setCurrentText(rs_preset)
+        self.refresh_vray_settings()
+        self.wg_vray.cBox_renderSettings.setCurrentText(rs_preset)
 
     def initial_render_settings(self, rs_preset):
         vr = dmf.get_vray()
         vr.output_saveRawFile = True
         rt.rendTimeType = 3
-        colorspace = vr.options_rgbColorSpace - 1
+        if 'GPU' in dmf.get_current_render():
+            colorspace = vr.V_Ray_settings.options_rgbColorSpace - 1
+        else:
+            colorspace = vr.options_rgbColorSpace - 1
+
         if colorspace:
             colorspace = 'ACES'
         else:
@@ -197,29 +228,51 @@ class Render_Settings():
             self.change_colorspace(colorspace)
 
     def change_minSubdiv(self, value):
-        self.wg_rs.cBox_renderSettings.setCurrentText('Custom')
+        self.wg_vray.cBox_renderSettings.setCurrentText('Custom')
         vr = dmf.get_vray()
         vr.twoLevel_baseSubdivs = value
 
     def change_maxSubdiv(self, value):
-        self.wg_rs.cBox_renderSettings.setCurrentText('Custom')
+        self.wg_vray.cBox_renderSettings.setCurrentText('Custom')
         vr = dmf.get_vray()
         vr.twoLevel_fineSubdivs = value
 
     def change_noiseThreshold(self, value):
-        self.wg_rs.cBox_renderSettings.setCurrentText('Custom')
+        self.wg_vray.cBox_renderSettings.setCurrentText('Custom')
         vr = dmf.get_vray()
         vr.twoLevel_threshold = value
 
     def change_shadingRate(self, value):
-        self.wg_rs.cBox_renderSettings.setCurrentText('Custom')
+        self.wg_vray.cBox_renderSettings.setCurrentText('Custom')
         vr = dmf.get_vray()
         vr.imageSampler_shadingRate = value
 
     def change_bucketSize(self, value):
-        self.wg_rs.cBox_renderSettings.setCurrentText('Custom')
+        self.wg_vray.cBox_renderSettings.setCurrentText('Custom')
         vr = dmf.get_vray()
         vr.twoLevel_bucket_width = value
+
+# RENDER SETTINGS - V-RAY GPU PARAMETERS ------------------------------------
+
+    def change_samples(self, value):
+        vr = dmf.get_vray_gpu()
+        vr.max_paths_per_pixel = value
+
+    def change_gpu_noise(self, value):
+        vr = dmf.get_vray_gpu()
+        vr.aa_threshold = value
+
+    def change_engine(self, value):
+        vr = dmf.get_vray_gpu()
+        if value == 'CUDA':
+            vr.engine_type = 2
+        else:
+            vr.engine_type = 3
+        rt.renderSceneDialog.update()
+
+    def toggle_gpu_displacement(self, value):
+        vr = dmf.get_vray_gpu()
+        vr.V_Ray_settings.options_displacement = value
 
 # RENDER SETTINGS - GLOBAL SWITCHES ---------------------------------------
 
@@ -242,12 +295,20 @@ class Render_Settings():
     def change_colorspace(self, colorspace):
         vr = dmf.get_vray()
         if 'sRGB' in colorspace:
-            vr.options_rgbColorSpace = 1
+            if 'GPU' in dmf.get_current_render():
+                vr.V_Ray_settings.options_rgbColorSpace = 1
+            else:
+                vr.options_rgbColorSpace = 1
+
             rt.vfbControl(rt.Name("srgb"), True)
             self.toggle_colorspace_ocio(False)
 
         elif 'ACES' in colorspace:
-            vr.options_rgbColorSpace = 2
+            if 'GPU' in dmf.get_current_render():
+                vr.V_Ray_settings.options_rgbColorSpace = 2
+            else:
+                vr.options_rgbColorSpace = 2
+
             rt.vfbControl(rt.Name("ocio"), True)
             self.toggle_colorspace_ocio(True)
             self.check_ocio_env_variable()
@@ -281,21 +342,34 @@ class Render_Settings():
 
         self.wg_rs.sBox_width.setValue(rt.renderWidth)
         self.wg_rs.sBox_height.setValue(rt.renderHeight)
-        self.wg_rs.sBox_startFrame.setValue(rt.rendStart)
-        self.wg_rs.sBox_endFrame.setValue(rt.rendEnd)
+        self.wg_rs.sBox_startFrame.setValue(dmf.get_start_frame())
+        self.wg_rs.sBox_endFrame.setValue(dmf.get_end_frame())
         self.wg_rs.sBox_nth.setValue(rt.rendNThFrame)
-        self.wg_rs.sBox_minSubdiv.setValue(vr.twoLevel_baseSubdivs)
-        self.wg_rs.sBox_maxSubdiv.setValue(vr.twoLevel_fineSubdivs)
-        self.wg_rs.dsBox_noise.setValue(vr.twoLevel_threshold)
-        self.wg_rs.sBox_shading.setValue(vr.imageSampler_shadingRate)
-        self.wg_rs.sBox_bucket.setValue(vr.twoLevel_bucket_width)
-        self.wg_rs.cBox_lights.setChecked(vr.options_lights)
-        self.wg_rs.cBox_gi.setChecked(vr.gi_on)
-        self.wg_rs.cBox_shadows.setChecked(vr.options_shadows)
-        self.wg_rs.cBox_displacement.setChecked(vr.options_displacement)
         self.wg_rs.cBox_colorspace.setCurrentIndex(self.set_colorspace())
         self.check_ocio_env_variable()
         self.get_ground_plane()
+
+    def refresh_vray_settings(self):
+        vr = dmf.get_vray()
+        self.wg_vray.sBox_minSubdiv.setValue(vr.twoLevel_baseSubdivs)
+        self.wg_vray.sBox_maxSubdiv.setValue(vr.twoLevel_fineSubdivs)
+        self.wg_vray.dsBox_noise.setValue(vr.twoLevel_threshold)
+        self.wg_vray.sBox_shading.setValue(int(vr.imageSampler_shadingRate))
+        self.wg_vray.sBox_bucket.setValue(vr.twoLevel_bucket_width)
+        self.wg_vray.cBox_lights.setChecked(vr.options_lights)
+        self.wg_vray.cBox_gi.setChecked(vr.gi_on)
+        self.wg_vray.cBox_shadows.setChecked(vr.options_shadows)
+        self.wg_vray.cBox_displacement.setChecked(vr.options_displacement)
+
+    def refresh_vray_gpu_settings(self):
+        vr = dmf.get_vray()
+        self.wg_vray_gpu.sBox_gpu_samples.setValue(vr.max_paths_per_pixel)
+        self.wg_vray_gpu.dsBox_gpu_noise.setValue(vr.aa_threshold)
+        self.wg_vray_gpu.cBox_displacement.setChecked(vr.options_displacement)
+        if vr.engine_type == 2:
+            self.wg_vray_gpu.cBox_engine.setCurrentText('CUDA')
+        else:
+            self.wg_vray_gpu.cBox_engine.setCurrentText('RTX')
 
     def check_ocio_env_variable(self):
         if 'OCIO' in os.environ:
@@ -305,7 +379,11 @@ class Render_Settings():
 
     def set_colorspace(self):
         vr = dmf.get_vray()
-        index = vr.options_rgbColorSpace - 1
+        if 'GPU' in dmf.get_current_render():
+            index = vr.V_Ray_settings.options_rgbColorSpace - 1
+        else:
+            index = vr.options_rgbColorSpace - 1
+
         self.toggle_colorspace_ocio(index)
         return index
 

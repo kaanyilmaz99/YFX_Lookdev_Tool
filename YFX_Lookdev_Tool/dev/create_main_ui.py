@@ -106,6 +106,8 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
         self.wg_util.btn_render_path.clicked.connect(self.set_render_path)
         self.wg_util.lEdit_render.textChanged.connect(self.enable_render)
         self.wg_util.btn_renderout.clicked.connect(dmf.start_render)
+        self.wg_util.pBtn_vfb.clicked.connect(self.show_vfb)
+        self.wg_util.cBox_render_engine.currentTextChanged.connect(self.change_render_engine)
         
 # HOME TAB ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -124,6 +126,7 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
         open_file = QFileDialog.getOpenFileName(None, 'Open Scene', 'C:\\', '3ds Max (*.max)')
         if open_file[0] != '':
             dmf.open_max_file(open_file[0])
+        self.check_scene()
 
     def btn_save_as_pressed(self):
         save_file = QFileDialog.getSaveFileName(None, 'Save As', 'C:\\', '3ds Max (*.max)')
@@ -265,8 +268,13 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
 # RENDER TAB --------------------------------------------------------------------------------------------------------------------------------------------------------
 
     def get_output_path(self):
-        vr = dmf.get_vray()
-        output_path = str(vr.output_rawFileName)
+        if self.wg_util.cBox_render_engine.currentText() == 'V-Ray':
+            vr = dmf.get_vray()
+            output_path = str(vr.output_rawFileName)
+        elif self.wg_util.cBox_render_engine.currentText() == 'V-Ray GPU':
+            vr = dmf.get_vray_gpu()
+            output_path = str(vr.V_Ray_Settings.output_rawFileName)
+
         if output_path == 'None':
             self.wg_util.btn_renderout.setEnabled(False)
             return ''
@@ -280,7 +288,7 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
                       'EXR File (*.exr)')
 
         self.wg_util.lEdit_render.setText(render_path[0])
-        dmf.set_vray_render_output(render_path[0])
+        dmf.set_vray_render_output(render_path[0], self.wg_util.cBox_render_engine.currentText())
 
     def enable_render(self):
         if self.wg_util.lEdit_render.displayText():
@@ -289,9 +297,10 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
             self.wg_util.btn_renderout.setEnabled(False)
 
     def toggle_render_settings(self):
+        render_engine = self.wg_util.cBox_render_engine.currentText()
         if self.wg_util.btn_render_settings.isChecked():
             self.wg_util.btn_render_settings.setText('▾  Render Settings')
-            rs.Render_Settings().show_render_settings(self)
+            rs.Render_Settings().show_render_settings(self, render_engine)
         else:
             self.wg_util.btn_render_settings.setText('▸  Render Settings')
             rs.Render_Settings().hide_render_settings(self)
@@ -303,6 +312,21 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
         else:
             self.wg_util.btn_aovs.setText('▸  AOVs')
             rs.Render_Settings().hide_aovs(self)
+
+    def change_render_engine(self):
+        if self.wg_util.cBox_render_engine.currentText() == 'V-Ray':
+            dmf.set_vray()
+        elif self.wg_util.cBox_render_engine.currentText() == 'V-Ray GPU':
+            dmf.set_vray_gpu()
+
+        if self.wg_util.btn_render_settings.isChecked() == True:
+            self.wg_util.btn_render_settings.setText('▸  Render Settings')
+            rs.Render_Settings().hide_render_settings(self)
+            self.wg_util.btn_render_settings.setChecked(False)
+
+    def show_vfb(self):
+        if 'V-Ray' in self.wg_util.cBox_render_engine.currentText():
+            rs.show_vfb()
 
 # CHECK SCENE - Check the .max scene file if it was created with this tool ---------------------------------------------------------------------------------------------------
 
@@ -316,6 +340,7 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
             self.wg_util.gBox_asset.setEnabled(True)
             self.wg_util.tab_textures.setEnabled(True)
             self.wg_util.btn_render_settings.setEnabled(True)
+            self.wg_util.btn_save_as.setEnabled(False)
 
             self.assets = ct.TT_Setup().get_assets()
             self.domeLights = ct.TT_Setup().get_domeLights()
@@ -323,6 +348,7 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
             self.check_assets()
             self.check_hdris()
             self.check_cameras()
+            self.check_render_engine()
 
     def check_assets(self):
         if self.assets:
@@ -363,6 +389,15 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
                     cam_ui.lock_camera(camera)
                 cam_ui.get_cam_focal_length(camera)
 
+    def check_render_engine(self):
+        if "V_Ray" in dmf.get_current_render() and not "GPU" in dmf.get_current_render():
+            self.wg_util.cBox_render_engine.setCurrentText('V-Ray')
+
+        elif "V_Ray" in dmf.get_current_render() and "GPU" in dmf.get_current_render():
+            self.wg_util.cBox_render_engine.setCurrentText('V-Ray GPU')
+
+        else:
+            self.wg_util.cBox_render_engine.setCurrentText('V-Ray')
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def main_widget():
