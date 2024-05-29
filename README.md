@@ -56,7 +56,6 @@ If you have set up everything you can just it the **Render** button and it will 
 
 # To do List
 
-- Maya, Houdini support
 - Nuke slapcomp support
 - Support for different render engines
 - More Material options
