@@ -34,7 +34,6 @@ def open_max_file(file_path):
 
 def save_as(save_file_path):
     name = save_file_path.split(r'/')[-1]
-    print(name)
     if '_' in name:
         save_file_path = save_file_path.split('_')[:-1]
         save_file_path = '_'.join(save_file_path) + '_v001.max'
