@@ -132,7 +132,7 @@ class YFX_LDEV_UI(QtWidgets.QDockWidget):
         save_file = QFileDialog.getSaveFileName(None, 'Save As', 'C:\\', '3ds Max (*.max)')
         save_file = str(save_file[0].replace('.max', ''))
         dmf.save_as(save_file)
-        self.wg_util.btn_save_as.setEnabled(False)
+        # self.wg_util.btn_save_as.setEnabled(False)
 
     def setup_tt(self):
         object_path = self.wg_util.line_import.displayText()

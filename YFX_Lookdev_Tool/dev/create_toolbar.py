@@ -14,7 +14,6 @@ importlib.reload(cm)
 from pymxs import runtime as rt
 from qtmax import GetQMaxMainWindow
 
-
 MENU_NAME = 'YFX_Lookdev_Tool'
 
 DIR_PATH = os.path.dirname(__file__)
