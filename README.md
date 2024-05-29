@@ -3,7 +3,7 @@
 The YFX - Lookdev Tool for 3dsMax helps you to create a Turntable setup with all the necessary functions in a quick and simple way.  You won't need to setup anything in your scene, but can jump right into the fun Lookdev of your desired asset with just a few clicks.  Furthermore you still have the options to customize your scene as you prefer with the most important options available in the UI.
 
 # Asset Example
-[![](https://pouch.jumpshare.com/preview/MvBymWZCZFthrFSPct90UyDSaVoQ2HVNvPBR_76eoL5YtziBnCCKGJh2dijPU4FN3TA_CwPmw6qn_KvwVpx27JWx5mWwOPIA_m_xw88uOg4)](https://vimeo.com/951345783/7e94697cd7?share=copy)
+[![](https://pouch.jumpshare.com/preview/x6ZvJSdmp7wbmzE6SpdCvBBDeQqvoy58b8TkViqGB5Zw2qOZfE6tAVBIAoTccmWB3TA_CwPmw6qn_KvwVpx27OT13FYvCTNItZ0oPSkH8ts)](https://vimeo.com/951345783/7e94697cd7?share=copy)
 ![]()
 
 # Features
