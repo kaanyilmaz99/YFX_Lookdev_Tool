@@ -10,12 +10,12 @@ set "PIPELINEPATH=%~dp0"
 set "PYTHONPATH=%PIPELINEPATH:~0,-1%\dev"
 set "ADSK_3DSMAX_STARTUPSCRIPTS_ADDON_DIR=%PIPELINEPATH:~0,-1%\dev" 
 
-set "MAX_VERSION=2022"
+set "MAX_VERSION=2024"
 
 set "QT_AUTO_SCREEN_SCALE_FACTOR=0"
 
 :: --- SPLASH SCREEN ---
-set "SPLASH_IMG=%PIPELINEPATH:~0,-1%\img\3dsMax_2022_YFX_Splashscreen.png"
+set "SPLASH_IMG=%PIPELINEPATH:~0,-1%\img\3dsMax_2024_YFX_Splashscreen.png"
 
 :: --- CALL MAX ---
 set "MAX_DIR=C:/Program Files/Autodesk/3ds Max %MAX_VERSION%"
