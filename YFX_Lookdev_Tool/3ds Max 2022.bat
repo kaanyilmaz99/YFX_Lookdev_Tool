@@ -1,24 +1,3 @@
-:: 3DsMax
-
-:: Hide Commands
-@echo off
-
-:: --- PATH ---
-set "PIPELINEPATH=%~dp0"
-
-:: --- PYTHON ---
-set "PYTHONPATH=%PIPELINEPATH:~0,-1%\dev"
-set "ADSK_3DSMAX_STARTUPSCRIPTS_ADDON_DIR=%PIPELINEPATH:~0,-1%\dev" 
-
-set "MAX_VERSION=2022"
-
-set "QT_AUTO_SCREEN_SCALE_FACTOR=0"
-
-:: --- SPLASH SCREEN ---
-set "SPLASH_IMG=%PIPELINEPATH:~0,-1%\img\3dsMax_2022_YFX_Splashscreen.png"
-
-:: --- CALL MAX ---
-set "MAX_DIR=C:/Program Files/Autodesk/3ds Max %MAX_VERSION%"
-set "PATH=%MAX_DIR%"
-start "" "%MAX_DIR%/3dsmax.exe" -a %SPLASH_IMG%
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:67e52cf056c8b4889bc416e8d82836d75604f0e321f2d98862feff4d94f17508
+size 525
