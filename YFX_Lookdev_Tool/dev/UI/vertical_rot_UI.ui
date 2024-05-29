@@ -1,3 +1,82 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:98d4afb68b5b23a8bb0c05b27d4bb300ee9a66f0ba55c0f9f574b8c0647c9a41
-size 2087
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>410</width>
+    <height>92</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="styleSheet">
+        <string notr="true">QGroupBox{
+	border: 1px solid rgb(90, 90, 90);
+    border-radius: 8px;
+	margin-top: 9px;
+}
+
+QGroupBox:title{
+	color: white;
+	subcontrol-position: top center;
+	padding: 0 5px;
+	margin-top: -12px;
+}
+
+QGroupBox:title:disabled{
+	color: gray;
+	subcontrol-position: top center;
+	padding: 0 5px;
+	margin-top: -12px;
+}</string>
+       </property>
+       <property name="title">
+        <string>Vertical Asset Rotation</string>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QCheckBox" name="cBox_enable_var">
+            <property name="text">
+             <string>Enable</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton">
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>If the vertical rotation is not centered, you can press this button to fix it.</string>
+            </property>
+            <property name="text">
+             <string>Update Locator</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

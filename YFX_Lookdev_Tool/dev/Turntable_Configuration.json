@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5003c1294a2e923c4d0aaad9156b2e663f30156e8f046b8b932991450df44234
-size 177
+{
+    "Width": 1920,
+    "Height": 1080,
+    "Start Frame": 1001,
+    "End Frame": 1200,
+    "Nth Frame": 1,
+    "Vertical Asset Rotation": false,
+    "Quality Preset": "High"
+}

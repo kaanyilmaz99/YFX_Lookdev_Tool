@@ -1,3 +1,287 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:2e7f988cc1bb54765eed83bdbc3dd4e78666b2912adc111c95fd63700242897c
-size 8180
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>wg_aov</class>
+ <widget class="QWidget" name="wg_aov">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>277</width>
+    <height>770</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>AOVs</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1">
+     <property name="bottomMargin">
+      <number>20</number>
+     </property>
+     <item>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="styleSheet">
+        <string notr="true">QGroupBox{
+	border: 1px solid rgb(90, 90, 90);
+    border-radius: 8px;
+	margin-top: 9px;
+}
+
+QGroupBox:title{
+	color: white;
+	subcontrol-position: top center;
+	padding: 0 5px;
+	margin-top: -12px;
+}
+
+QGroupBox:title:disabled{
+	color: gray;
+	subcontrol-position: top center;
+	padding: 0 5px;
+	margin-top: -12px;
+}</string>
+       </property>
+       <property name="title">
+        <string>Beauty Passes</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="leftMargin">
+           <number>40</number>
+          </property>
+          <property name="topMargin">
+           <number>15</number>
+          </property>
+          <property name="rightMargin">
+           <number>10</number>
+          </property>
+          <property name="bottomMargin">
+           <number>15</number>
+          </property>
+          <item>
+           <widget class="QCheckBox" name="cBox_Lighting">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>     Lighting</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_GlobalIllumination">
+            <property name="text">
+             <string>     GlobalIllumination</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_Reflection">
+            <property name="text">
+             <string>     Reflection</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_CoatReflection">
+            <property name="text">
+             <string>     CoatReflection</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_Refraction">
+            <property name="text">
+             <string>     Refraction</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_Specular">
+            <property name="text">
+             <string>     Specular</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_CoatSpecular">
+            <property name="text">
+             <string>     CoatSpecular</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_SSS2">
+            <property name="text">
+             <string>     SSS2</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_SelfIllumination">
+            <property name="text">
+             <string>     SelfIllumination</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_Atmosphere">
+            <property name="text">
+             <string>     Atmosphere</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_Background">
+            <property name="text">
+             <string>     Background</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="styleSheet">
+        <string notr="true">QGroupBox{
+	border: 1px solid rgb(90, 90, 90);
+    border-radius: 8px;
+	margin-top: 9px;
+}
+
+QGroupBox:title{
+	color: white;
+	subcontrol-position: top center;
+	padding: 0 5px;
+	margin-top: -12px;
+}
+
+QGroupBox:title:disabled{
+	color: gray;
+	subcontrol-position: top center;
+	padding: 0 5px;
+	margin-top: -12px;
+}</string>
+       </property>
+       <property name="title">
+        <string>Utility Passes</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <property name="leftMargin">
+           <number>40</number>
+          </property>
+          <property name="topMargin">
+           <number>15</number>
+          </property>
+          <property name="bottomMargin">
+           <number>15</number>
+          </property>
+          <item>
+           <widget class="QCheckBox" name="cBox_DiffuseFilter">
+            <property name="text">
+             <string>     DiffuseFilter</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_ReflectionFilter">
+            <property name="text">
+             <string>     ReflectionFilter</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_ReflectGlossiness">
+            <property name="text">
+             <string>     ReflectGlossiness</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_CoatFilter">
+            <property name="text">
+             <string>     CoatFilter</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_CoatGlossiness">
+            <property name="text">
+             <string>     CoatGlossiness</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_RefractionFilter">
+            <property name="text">
+             <string>     RefractionFilter</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_Shadows">
+            <property name="text">
+             <string>     Shadows</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_BumpNormals">
+            <property name="text">
+             <string>     BumpNormals</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_Normals">
+            <property name="text">
+             <string>     Normals</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_ZDepth">
+            <property name="text">
+             <string>     ZDepth</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="cBox_Wireframe">
+            <property name="text">
+             <string>     Wireframe</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
