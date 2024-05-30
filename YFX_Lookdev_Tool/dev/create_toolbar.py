@@ -22,7 +22,6 @@ from PySide2.QtWidgets import QMainWindow, QDockWidget, QToolButton, QToolBar, Q
 from PySide2.QtGui import QIcon
 
 import create_main_ui as cm
-importlib.reload(cm)
 
 from qtmax import GetQMaxMainWindow
 
