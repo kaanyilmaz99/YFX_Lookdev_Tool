@@ -29,7 +29,7 @@ The YFX - Lookdev Tool for 3dsMax and V-Ray helps you to create a Turntable setu
 # How it works
 
 1.) </br>
-After downloading the tool, execute the 3dsMax.bat file. As soon as 3dsMax has launched you should see the **YFX** button in the top toolbar. Press the button and the YFX UI will show up.
+After downloading the tool, execute one of the 3dsMax.bat files inside the **YFX_Lookdev_Tool** folder. As soon as 3dsMax has launched you should see the **YFX** button in the top toolbar. Press the button and the YFX UI will show up.
 
 2.) </br>
 In the **Home Tab** choose an Asset by clicking the Folder button. Then press **Create Turntable** and your asset will be imported into your new Turntable scene. Now you can **Save** your scene.
