@@ -9,6 +9,7 @@ The YFX - Lookdev Tool for 3dsMax and V-Ray helps you to create a Turntable setu
 # Features
 
  - [x] Works with 3dsMax 2022, 2023 and 2024
+ - [x] .json Configuration file
  - [x] Dynamic Turntable Creation
  - [x] Incremental Save options
  - [x] Asset Importer
